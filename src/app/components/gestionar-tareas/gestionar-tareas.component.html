@@ -1,0 +1,127 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/home"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Gestionar tareas</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <div class="tasks-page">
+    <ion-button class="new-task-button" size="small" (click)="abrirFormulario()">
+      + Nueva tarea
+    </ion-button>
+
+    <div class="section-title">
+      <h2>Tareas pendientes por finca</h2>
+    </div>
+
+    <div class="empty-state" *ngIf="tareasPendientes.length === 0">
+      No hay tareas pendientes.
+    </div>
+
+    <section class="farm-section" *ngFor="let grupo of tareasPorFinca">
+      <div class="farm-heading">
+        <h3>{{ grupo.nombre }}</h3>
+        <span>{{ grupo.tareas.length }} pendiente{{ grupo.tareas.length === 1 ? '' : 's' }}</span>
+      </div>
+
+      <div class="task-card" *ngFor="let item of grupo.tareas">
+        <div class="task-info">
+          <div class="task-title-row">
+            <h4>{{ item.titulo }}</h4>
+            <span class="status-badge">
+              {{ item.prioridad }}
+            </span>
+          </div>
+          <p *ngIf="item.descripcion">{{ item.descripcion }}</p>
+          <p>{{ item.fecha }}</p>
+        </div>
+        <div class="task-actions">
+          <ion-checkbox
+            labelPlacement="end"
+            justify="end"
+            [checked]="false"
+            (ionChange)="marcarTarea(item, $event.detail.checked)"
+          >
+            Realizada
+          </ion-checkbox>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <div class="floating-backdrop" *ngIf="formularioVisible" (click)="cerrarFormulario()"></div>
+
+  <div class="floating-form" *ngIf="formularioVisible">
+    <div class="floating-form-header">
+      <h2>Nueva tarea</h2>
+      <button type="button" aria-label="Cerrar formulario" (click)="cerrarFormulario()">x</button>
+    </div>
+
+    <form #tareaForm="ngForm" (ngSubmit)="guardarTarea()">
+      <ion-list>
+        <ion-item>
+          <ion-label position="stacked">Finca</ion-label>
+          <ion-select
+            name="codigo_finca"
+            [(ngModel)]="tarea.codigo_finca"
+            interface="alert"
+            required
+          >
+            <ion-select-option *ngFor="let finca of fincas" [value]="finca.codigo">
+              {{ finca.nombre }}
+            </ion-select-option>
+          </ion-select>
+        </ion-item>
+
+        <ion-item>
+          <ion-label position="stacked">Titulo</ion-label>
+          <ion-input
+            name="titulo"
+            [(ngModel)]="tarea.titulo"
+            required
+          ></ion-input>
+        </ion-item>
+
+        <ion-item>
+          <ion-label position="stacked">Descripcion</ion-label>
+          <ion-textarea
+            name="descripcion"
+            [(ngModel)]="tarea.descripcion"
+            autoGrow="true"
+          ></ion-textarea>
+        </ion-item>
+
+        <ion-item>
+          <ion-label position="stacked">Fecha</ion-label>
+          <ion-input
+            name="fecha"
+            type="date"
+            [(ngModel)]="tarea.fecha"
+            required
+          ></ion-input>
+        </ion-item>
+
+        <ion-item>
+          <ion-label position="stacked">Prioridad</ion-label>
+          <ion-select
+            name="prioridad"
+            [(ngModel)]="tarea.prioridad"
+            interface="alert"
+            required
+          >
+            <ion-select-option value="baja">Baja</ion-select-option>
+            <ion-select-option value="media">Media</ion-select-option>
+            <ion-select-option value="alta">Alta</ion-select-option>
+          </ion-select>
+        </ion-item>
+      </ion-list>
+
+      <ion-button expand="block" type="submit" [disabled]="tareaForm.invalid">
+        Guardar tarea
+      </ion-button>
+    </form>
+  </div>
+</ion-content>

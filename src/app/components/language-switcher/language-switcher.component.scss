@@ -1,0 +1,33 @@
+.language-switcher {
+  --background: var(--language-switcher-background, #fff);
+  --border-radius: 15px;
+  --color: var(--language-switcher-color, #222);
+  --inner-padding-end: 16px;
+  --min-height: 78px;
+  --padding-start: 16px;
+  border-radius: 15px;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.12);
+  width: 100%;
+}
+
+ion-label {
+  color: var(--language-switcher-muted, #555);
+  font-size: 15px;
+  font-weight: 700;
+}
+
+ion-select {
+  --highlight-color-focused: transparent;
+  color: var(--language-switcher-color, #222);
+  font-size: 14px;
+  font-weight: 700;
+  min-height: 40px;
+}
+
+@media (prefers-color-scheme: dark) {
+  .language-switcher {
+    --language-switcher-background: #1b211b;
+    --language-switcher-color: #eef4ee;
+    --language-switcher-muted: #b8c3b8;
+  }
+}

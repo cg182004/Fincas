@@ -1,0 +1,101 @@
+<section class="login-card">
+  <h1>{{ 'login.title' | translate }}</h1>
+  <p>{{ helperText | translate }}</p>
+
+  <ion-segment [value]="mode" (ionChange)="changeMode($event.detail.value)">
+    <ion-segment-button value="login">
+      <ion-label>{{ 'login.login' | translate }}</ion-label>
+    </ion-segment-button>
+    <ion-segment-button value="register">
+      <ion-label>{{ 'login.register' | translate }}</ion-label>
+    </ion-segment-button>
+  </ion-segment>
+
+  <form class="email-form" (ngSubmit)="submitEmailAuth()">
+    @if (mode === 'register') {
+      <ion-item>
+        <ion-label position="stacked">{{ 'login.name' | translate }}</ion-label>
+        <ion-input type="text" name="nombre" autocomplete="given-name" [(ngModel)]="nombre" [disabled]="isLoading" required></ion-input>
+      </ion-item>
+
+      <ion-item>
+        <ion-label position="stacked">{{ 'login.last_name' | translate }}</ion-label>
+        <ion-input type="text" name="apellido" autocomplete="family-name" [(ngModel)]="apellido" [disabled]="isLoading" required></ion-input>
+      </ion-item>
+
+      <ion-item>
+        <ion-label position="stacked">{{ 'login.birth_date' | translate }}</ion-label>
+        <ion-input type="date" name="fechaNacimiento" [(ngModel)]="fechaNacimiento" [disabled]="isLoading" required></ion-input>
+      </ion-item>
+
+      <ion-item>
+        <ion-label position="stacked">{{ 'login.gender' | translate }}</ion-label>
+        <ion-select name="genero" interface="popover" [(ngModel)]="genero" [disabled]="isLoading" required>
+          <ion-select-option value="femenino">{{ 'login.female' | translate }}</ion-select-option>
+          <ion-select-option value="masculino">{{ 'login.male' | translate }}</ion-select-option>
+        </ion-select>
+      </ion-item>
+
+      <ion-item>
+        <ion-label position="stacked">{{ 'login.username' | translate }}</ion-label>
+        <ion-input type="text" name="nombreUsuario" autocomplete="username" [(ngModel)]="nombreUsuario" [disabled]="isLoading" required></ion-input>
+      </ion-item>
+
+      <ion-item>
+        <ion-label position="stacked">{{ 'login.email' | translate }}</ion-label>
+        <ion-input type="email" name="email" inputmode="email" autocomplete="email" [(ngModel)]="email" [disabled]="isLoading" required></ion-input>
+      </ion-item>
+    } @else {
+      <ion-item>
+        <ion-label position="stacked">{{ 'login.identifier' | translate }}</ion-label>
+        <ion-input type="text" name="identifier" autocomplete="username" [(ngModel)]="identifier" [disabled]="isLoading" required></ion-input>
+      </ion-item>
+    }
+
+    <ion-item>
+      <ion-label position="stacked">{{ 'login.password' | translate }}</ion-label>
+      <ion-input [type]="mostrarPassword ? 'text' : 'password'" name="password" autocomplete="current-password" [(ngModel)]="password" [disabled]="isLoading" required></ion-input>
+      @if (password) {
+        <ion-button class="password-toggle" fill="clear" slot="end" type="button" [disabled]="isLoading" (click)="mostrarPassword = !mostrarPassword">
+          <ion-icon [name]="mostrarPassword ? 'eye-off-outline' : 'eye-outline'"></ion-icon>
+        </ion-button>
+      }
+    </ion-item>
+
+    @if (mode === 'register') {
+      <ion-item>
+        <ion-label position="stacked">{{ 'login.confirm_password' | translate }}</ion-label>
+        <ion-input [type]="mostrarConfirmPassword ? 'text' : 'password'" name="confirmPassword" autocomplete="new-password" [(ngModel)]="confirmPassword" [disabled]="isLoading" required></ion-input>
+        @if (confirmPassword) {
+          <ion-button class="password-toggle" fill="clear" slot="end" type="button" [disabled]="isLoading" (click)="mostrarConfirmPassword = !mostrarConfirmPassword">
+            <ion-icon [name]="mostrarConfirmPassword ? 'eye-off-outline' : 'eye-outline'"></ion-icon>
+          </ion-button>
+        }
+      </ion-item>
+    }
+
+    <ion-button expand="block" type="submit" [disabled]="isLoading">
+      {{ (isLoading ? 'login.processing' : submitLabel) | translate }}
+    </ion-button>
+  </form>
+
+  @if (errorMessage) {
+    <ion-text color="danger">
+      <p class="auth-message">{{ errorMessage }}</p>
+    </ion-text>
+  }
+
+  @if (successMessage) {
+    <ion-text color="success">
+      <p class="auth-message">{{ successMessage }}</p>
+    </ion-text>
+  }
+
+  <div class="login-divider">
+    <span></span>
+    <p>{{ 'login.or' | translate }}</p>
+    <span></span>
+  </div>
+
+  <app-google-login-button></app-google-login-button>
+</section>

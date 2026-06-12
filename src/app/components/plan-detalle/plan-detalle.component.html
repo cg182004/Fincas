@@ -1,0 +1,86 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/home"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Detalle del plan</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <div class="detail-page" *ngIf="plan; else noPlan">
+    <div class="plan-card">
+      <div class="card-head">
+        <p>Codigo plan de siembra</p>
+        <h1>{{ plan.codigo_plan_siembra }}</h1>
+      </div>
+
+      <div class="detail-grid">
+        <div class="detail-row">
+          <span>Fecha propuesta</span>
+          <strong>{{ plan.fecha_propuesta }}</strong>
+        </div>
+
+        <div class="detail-row">
+          <span>Finca</span>
+          <strong>{{ getNombreFinca(plan.codigo_finca) }}</strong>
+        </div>
+
+        <div class="detail-row">
+          <span>Cultivo</span>
+          <strong>{{ getNombreCultivo(plan.codigo_cultivo) }}</strong>
+        </div>
+
+        <div class="detail-row">
+          <span>Superficie a sembrar (ha)</span>
+          <strong>{{ plan.superficie_siembra }}</strong>
+        </div>
+
+        <div class="detail-row">
+          <span>pH del suelo</span>
+          <strong>{{ plan.ph_suelo }}</strong>
+        </div>
+
+        <div class="detail-row">
+          <span>Textura del suelo</span>
+          <strong>{{ plan.textura_suelo }}</strong>
+        </div>
+
+        <div class="detail-row">
+          <span>Materia organica (%)</span>
+          <strong>{{ plan.materia_organica }}</strong>
+        </div>
+
+        <div class="detail-row">
+          <span>Vel. infiltracion min. (cm/h)</span>
+          <strong>{{ plan.vel_infiltracion_min }}</strong>
+        </div>
+
+        <div class="detail-row">
+          <span>Vel. infiltracion max. (cm/h)</span>
+          <strong>{{ plan.vel_infiltracion_max }}</strong>
+        </div>
+
+        <div class="detail-row">
+          <span>Creado en</span>
+          <strong>{{ plan.creado_en }}</strong>
+        </div>
+
+        <div class="detail-row">
+          <span>Estado</span>
+          <strong>{{ plan.estado || 'activo' }}</strong>
+        </div>
+      </div>
+
+      <ion-button expand="block" [routerLink]="['/finca', plan.id]">
+        Editar
+      </ion-button>
+    </div>
+  </div>
+
+  <ng-template #noPlan>
+    <div class="detail-page">
+      <div class="empty-state">No se encontro este plan de siembra.</div>
+    </div>
+  </ng-template>
+</ion-content>

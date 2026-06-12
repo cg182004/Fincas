@@ -1,0 +1,194 @@
+<ion-content [fullscreen]="true">
+  <div class="profile-header">
+    <label class="avatar-picker">
+      <input
+        type="file"
+        accept="image/png,image/jpeg,image/webp"
+        [disabled]="uploadingAvatar"
+        (change)="uploadAvatar($event)"
+      />
+
+      <span class="avatar">
+        <img *ngIf="profile?.avatar_url; else initialsAvatar" [src]="profile?.avatar_url" alt="Foto de perfil" />
+
+        <ng-template #initialsAvatar>
+          {{ profileInitials }}
+        </ng-template>
+      </span>
+
+      <span class="avatar-action">
+        <ion-icon name="camera-outline"></ion-icon>
+      </span>
+    </label>
+
+    <h1>{{ 'profile.title' | translate }}</h1>
+    <p *ngIf="profile">{{ profile.nombre }} {{ profile.apellido }}</p>
+    <p *ngIf="loading">{{ 'common.loading_profile' | translate }}</p>
+    <p *ngIf="errorMessage">{{ errorMessage }}</p>
+    <p *ngIf="uploadingAvatar">{{ 'profile.uploading_photo' | translate }}</p>
+    <p *ngIf="avatarMessage">{{ avatarMessage }}</p>
+  </div>
+
+  <div class="profile-content">
+   <div class="profile-card" *ngIf="profile">
+  <div class="profile-icon">
+    <ion-icon name="person-outline"></ion-icon>
+  </div>
+
+  <div class="profile-info">
+    <h3>{{ 'profile.user' | translate }}</h3>
+    <p>{{ profile.nombre_usuario }}</p>
+    <span>{{ 'profile.active_profile' | translate }}</span>
+  </div>
+</div>
+
+<div class="profile-card" *ngIf="profile">
+  <div class="profile-icon">
+    <ion-icon name="mail-outline"></ion-icon>
+  </div>
+
+  <div class="profile-info">
+    <h3>{{ 'profile.email' | translate }}</h3>
+    <p>{{ profile.email }}</p>
+    <span>{{ 'profile.registered_email' | translate }}</span>
+  </div>
+</div>
+
+<div class="profile-card" *ngIf="profile">
+  <div class="profile-icon">
+    <ion-icon name="shield-checkmark-outline"></ion-icon>
+  </div>
+
+  <div class="profile-info">
+    <h3>{{ 'profile.personal_data' | translate }}</h3>
+    <p>{{ profile.genero }} - {{ profile.fecha_nacimiento }}</p>
+    <span>{{ 'profile.account_info' | translate }}</span>
+  </div>
+</div>
+
+<div class="password-card" *ngIf="profile">
+  <div class="profile-icon">
+    <ion-icon name="shield-checkmark-outline"></ion-icon>
+  </div>
+
+  <div class="profile-info">
+    <h3>{{ 'profile.password' | translate }}</h3>
+    <p>{{ 'profile.password_hint' | translate }}</p>
+    <span *ngIf="passwordMessage">{{ passwordMessage }}</span>
+  </div>
+
+  <ion-button size="small" (click)="openPasswordModal()">{{ 'profile.change' | translate }}</ion-button>
+</div>
+  </div>
+</ion-content>
+
+<ion-modal
+  class="password-modal-dialog"
+  [isOpen]="isPasswordModalOpen"
+  [backdropDismiss]="!changingPassword"
+  (didDismiss)="closePasswordModal()"
+>
+  <ng-template>
+    <div class="password-modal">
+      <h2>{{ 'profile.change_password' | translate }}</h2>
+
+      <ion-item class="modal-password-field">
+        <ion-label position="stacked">{{ 'profile.current_password' | translate }}</ion-label>
+        <ion-input
+          [type]="showCurrentPassword ? 'text' : 'password'"
+          [(ngModel)]="currentPassword"
+        ></ion-input>
+        <ion-button
+          *ngIf="currentPassword"
+          class="modal-password-toggle"
+          fill="clear"
+          slot="end"
+          type="button"
+          [disabled]="changingPassword"
+          (click)="showCurrentPassword = !showCurrentPassword"
+        >
+          <ion-icon [name]="showCurrentPassword ? 'eye-off-outline' : 'eye-outline'"></ion-icon>
+        </ion-button>
+      </ion-item>
+
+      <ion-item class="modal-password-field">
+        <ion-label position="stacked">{{ 'profile.new_password' | translate }}</ion-label>
+        <ion-input
+          [type]="showNewPassword ? 'text' : 'password'"
+          [(ngModel)]="newPassword"
+        ></ion-input>
+        <ion-button
+          *ngIf="newPassword"
+          class="modal-password-toggle"
+          fill="clear"
+          slot="end"
+          type="button"
+          [disabled]="changingPassword"
+          (click)="showNewPassword = !showNewPassword"
+        >
+          <ion-icon [name]="showNewPassword ? 'eye-off-outline' : 'eye-outline'"></ion-icon>
+        </ion-button>
+      </ion-item>
+
+      <ion-item class="modal-password-field">
+        <ion-label position="stacked">{{ 'profile.confirm_password' | translate }}</ion-label>
+        <ion-input
+          [type]="showConfirmPassword ? 'text' : 'password'"
+          [(ngModel)]="confirmPassword"
+        ></ion-input>
+        <ion-button
+          *ngIf="confirmPassword"
+          class="modal-password-toggle"
+          fill="clear"
+          slot="end"
+          type="button"
+          [disabled]="changingPassword"
+          (click)="showConfirmPassword = !showConfirmPassword"
+        >
+          <ion-icon [name]="showConfirmPassword ? 'eye-off-outline' : 'eye-outline'"></ion-icon>
+        </ion-button>
+      </ion-item>
+
+      <p *ngIf="passwordMessage">{{ passwordMessage }}</p>
+
+      <div class="modal-actions">
+        <ion-button fill="outline" (click)="cancelPasswordModal()" [disabled]="changingPassword">
+          {{ 'common.cancel' | translate }}
+        </ion-button>
+
+        <ion-button (click)="changePassword()" [disabled]="changingPassword">
+          {{ (changingPassword ? 'common.saving' : 'common.save') | translate }}
+        </ion-button>
+      </div>
+    </div>
+  </ng-template>
+</ion-modal>
+
+<ion-footer>
+  <ion-tab-bar slot="bottom">
+    <ion-tab-button routerLink="/home" routerDirection="root">
+      <ion-icon name="home-outline"></ion-icon>
+      <ion-label>{{ 'tabs.home' | translate }}</ion-label>
+    </ion-tab-button>
+
+    <ion-tab-button routerLink="/ubicacion" routerDirection="root">
+      <ion-icon name="location-outline"></ion-icon>
+      <ion-label>{{ 'tabs.location' | translate }}</ion-label>
+    </ion-tab-button>
+
+    <ion-tab-button routerLink="/resumen" routerDirection="root">
+      <ion-icon name="bar-chart-outline"></ion-icon>
+      <ion-label>{{ 'tabs.summary' | translate }}</ion-label>
+    </ion-tab-button>
+
+    <ion-tab-button routerLink="/perfil" routerDirection="root">
+      <ion-icon name="person-outline"></ion-icon>
+      <ion-label>{{ 'tabs.profile' | translate }}</ion-label>
+    </ion-tab-button>
+
+    <ion-tab-button routerLink="/servicios" routerDirection="root">
+      <ion-icon name="settings-outline"></ion-icon>
+      <ion-label>{{ 'tabs.services' | translate }}</ion-label>
+    </ion-tab-button>
+  </ion-tab-bar>
+</ion-footer>

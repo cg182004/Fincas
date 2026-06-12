@@ -1,0 +1,158 @@
+ion-content {
+  --background: var(--services-background, #f8f8f3);
+}
+
+.services-header {
+  background: #087b18;
+  color: #fff;
+  padding: 36px 20px 28px;
+}
+
+.services-header h1,
+.services-header p {
+  margin: 0;
+}
+
+.services-header h1 {
+  font-size: 28px;
+  font-weight: 800;
+}
+
+.services-header p {
+  color: #d8ecd9;
+  font-size: 14px;
+  margin-top: 5px;
+}
+
+.services-content {
+  padding: 18px;
+}
+
+.device-card {
+  align-items: center;
+  background: var(--services-card-background, #fff);
+  border-radius: 15px;
+  box-shadow: var(--services-card-shadow, 0 3px 10px rgba(0, 0, 0, 0.12));
+  display: flex;
+  gap: 12px;
+  margin-bottom: 12px;
+  padding: 16px;
+}
+
+.language-panel {
+  margin: -2px 0 12px;
+}
+
+.device-icon {
+  align-items: center;
+  background: #e8f4ea;
+  border-radius: 12px;
+  color: #149130;
+  display: flex;
+  height: 46px;
+  justify-content: center;
+  width: 46px;
+}
+
+.device-icon ion-icon {
+  font-size: 24px;
+}
+
+.device-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.device-info h3 {
+  color: var(--services-heading-color, #222);
+  font-size: 15px;
+  margin: 0;
+}
+
+.device-info p {
+  color: var(--services-muted-color, #666);
+  font-size: 12px;
+  margin: 3px 0;
+}
+
+.device-info span {
+  color: #0d8b20;
+  display: block;
+  font-size: 12px;
+  font-weight: 700;
+  overflow-wrap: anywhere;
+}
+
+ion-toggle {
+  --handle-background-checked: #087b18;
+  --track-background-checked: #b8e3be;
+}
+
+.device-actions {
+  display: flex;
+  flex-shrink: 0;
+  gap: 8px;
+}
+
+.action-button {
+  --background: #087b18;
+  --background-activated: #0a6816;
+  --background-hover: #0a6816;
+  --border-radius: 8px;
+  --box-shadow: none;
+  font-size: 12px;
+  font-weight: 700;
+  min-width: 112px;
+  text-transform: none;
+}
+
+.action-button.outline {
+  --background: transparent;
+  --border-color: #087b18;
+  --color: #087b18;
+  min-width: 96px;
+}
+
+ion-footer {
+  background: var(--services-card-background, #fff);
+}
+
+ion-tab-bar {
+  --background: var(--services-card-background, #fff);
+  --color: var(--services-muted-color, #555);
+  --color-selected: #087b18;
+  height: 65px;
+}
+
+@media (prefers-color-scheme: dark) {
+  :host {
+    --services-background: #101510;
+    --services-card-background: #1b211b;
+    --services-card-shadow: 0 3px 12px rgba(0, 0, 0, 0.38);
+    --services-heading-color: #eef4ee;
+    --services-muted-color: #b8c3b8;
+  }
+
+  .device-icon {
+    background: #203824;
+  }
+
+  .action-button.outline {
+    --border-color: #7bd88a;
+    --color: #7bd88a;
+  }
+}
+
+@media (max-width: 420px) {
+  .device-card {
+    align-items: flex-start;
+  }
+
+  .device-actions {
+    flex-direction: column;
+  }
+
+  .action-button {
+    min-width: 96px;
+  }
+}

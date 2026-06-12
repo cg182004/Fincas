@@ -1,0 +1,244 @@
+ion-content {
+  --background: var(--tasks-bg, #f8f8f3);
+}
+
+ion-toolbar {
+  --background: #087b18;
+  --color: #ffffff;
+}
+
+.tasks-page {
+  background: var(--tasks-bg, #f8f8f3);
+  min-height: 100%;
+  padding: 18px;
+}
+
+.new-task-button {
+  --border-radius: 999px;
+  height: 36px;
+  margin: 0;
+}
+
+ion-list {
+  background: transparent;
+  margin-bottom: 18px;
+}
+
+ion-item {
+  --background: var(--tasks-card, #ffffff);
+  --border-color: var(--tasks-border, #e1e6df);
+  --border-radius: 12px;
+  --color: var(--tasks-text, #152016);
+  --highlight-color-focused: #087b18;
+  --padding-start: 14px;
+  --inner-padding-end: 14px;
+  border-radius: 12px;
+  margin-bottom: 12px;
+}
+
+ion-input,
+ion-select,
+ion-textarea {
+  --color: var(--tasks-text, #152016);
+}
+
+ion-button {
+  --background: #087b18;
+  --background-activated: #076915;
+  --background-disabled: #7fa886;
+  --border-radius: 12px;
+  height: 48px;
+  text-transform: none;
+}
+
+.section-title {
+  margin: 18px 0 12px;
+}
+
+.section-title h2 {
+  color: var(--tasks-text, #152016);
+  font-size: 19px;
+  margin: 0;
+}
+
+.farm-section {
+  margin-bottom: 22px;
+}
+
+.farm-heading {
+  align-items: center;
+  display: flex;
+  gap: 10px;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.farm-heading h3,
+.farm-heading span {
+  margin: 0;
+}
+
+.farm-heading h3 {
+  color: var(--tasks-text, #152016);
+  font-size: 17px;
+}
+
+.farm-heading span {
+  color: var(--tasks-muted, #667066);
+  font-size: 12px;
+  white-space: nowrap;
+}
+
+.task-card,
+.empty-state {
+  background: var(--tasks-card, #ffffff);
+  border-radius: 12px;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.12);
+}
+
+.task-card {
+  align-items: flex-start;
+  display: flex;
+  gap: 12px;
+  justify-content: space-between;
+  margin-bottom: 12px;
+  padding: 16px;
+}
+
+.task-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.task-title-row {
+  align-items: center;
+  display: flex;
+  gap: 8px;
+  justify-content: space-between;
+}
+
+.task-card h4,
+.task-card p {
+  margin: 0;
+}
+
+.task-card h4 {
+  color: var(--tasks-text, #152016);
+  font-size: 16px;
+}
+
+.task-card p {
+  color: var(--tasks-muted, #667066);
+  font-size: 13px;
+  margin-top: 4px;
+}
+
+.status-badge {
+  background: #0d8b20;
+  border-radius: 12px;
+  color: #ffffff;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 4px 8px;
+  text-transform: capitalize;
+}
+
+.task-actions {
+  align-items: flex-end;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.task-actions ion-checkbox {
+  --checkbox-background-checked: #087b18;
+  --border-color-checked: #087b18;
+  color: var(--tasks-text, #152016);
+  font-size: 13px;
+  white-space: nowrap;
+}
+
+.floating-backdrop {
+  background: rgba(9, 18, 10, 0.42);
+  inset: 0;
+  position: fixed;
+  z-index: 20;
+}
+
+.floating-form {
+  background: var(--tasks-card, #ffffff);
+  border-radius: 12px;
+  box-shadow: 0 16px 34px rgba(0, 0, 0, 0.24);
+  left: 50%;
+  max-height: calc(100vh - 56px);
+  max-width: 520px;
+  overflow: auto;
+  padding: 18px;
+  position: fixed;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: calc(100% - 32px);
+  z-index: 21;
+}
+
+.floating-form-header {
+  align-items: center;
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 14px;
+}
+
+.floating-form-header h2 {
+  color: var(--tasks-text, #152016);
+  font-size: 19px;
+  margin: 0;
+}
+
+.floating-form-header button {
+  align-items: center;
+  background: #edf2ed;
+  border: 1px solid var(--tasks-border, #e1e6df);
+  border-radius: 50%;
+  color: var(--tasks-text, #152016);
+  display: inline-flex;
+  font-size: 18px;
+  height: 32px;
+  justify-content: center;
+  line-height: 1;
+  padding: 0;
+  width: 32px;
+}
+
+@media (max-width: 420px) {
+  .task-card {
+    flex-direction: column;
+  }
+
+  .task-actions {
+    align-items: flex-start;
+    width: 100%;
+  }
+
+  .farm-heading {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 4px;
+  }
+}
+
+.empty-state {
+  color: var(--tasks-muted, #667066);
+  font-size: 14px;
+  padding: 18px;
+  text-align: center;
+}
+
+@media (prefers-color-scheme: dark) {
+  :host {
+    --tasks-bg: #101510;
+    --tasks-card: #1b211b;
+    --tasks-border: #334033;
+    --tasks-text: #eef4ee;
+    --tasks-muted: #b8c3b8;
+  }
+}

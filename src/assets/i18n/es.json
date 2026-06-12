@@ -1,0 +1,117 @@
+{
+  "common": {
+    "cancel": "Cancelar",
+    "save": "Guardar",
+    "saving": "Guardando...",
+    "loading_profile": "Cargando perfil..."
+  },
+  "tabs": {
+    "home": "Inicio",
+    "location": "Ubicacion",
+    "summary": "Resumen",
+    "profile": "Perfil",
+    "services": "Servicios"
+  },
+  "login": {
+    "title": "Iniciar sesion",
+    "login": "Entrar",
+    "register": "Crear cuenta",
+    "helper_login": "Accede con tu usuario, correo y contrasena o continua con Google.",
+    "helper_register": "Crea tu cuenta con tus datos personales, usuario y contrasena.",
+    "name": "Nombre",
+    "last_name": "Apellido",
+    "birth_date": "Fecha de nacimiento",
+    "gender": "Genero",
+    "female": "Femenino",
+    "male": "Masculino",
+    "username": "Nombre de usuario",
+    "email": "Correo",
+    "identifier": "Usuario o correo",
+    "password": "Contrasena",
+    "confirm_password": "Confirmar contrasena",
+    "processing": "Procesando...",
+    "or": "o",
+    "google": "Continuar con Google",
+    "connecting": "Conectando...",
+    "success": {
+      "created": "Cuenta creada. Revisa tu correo para confirmar el acceso."
+    },
+    "errors": {
+      "missing_login": "Escribe tu usuario o correo y contrasena.",
+      "missing_register": "Completa todos los campos para crear tu cuenta.",
+      "short_password": "La contrasena debe tener al menos 6 caracteres.",
+      "password_mismatch": "Las contrasenas no coinciden.",
+      "generic": "No se pudo completar la accion.",
+      "invalid_credentials": "Usuario, correo o contrasena incorrectos.",
+      "username_not_found": "No encontramos ese nombre de usuario.",
+      "email_registered": "Ese correo ya tiene una cuenta. Intenta iniciar sesion."
+    }
+  },
+  "home": {
+    "welcome": "Bienvenido",
+    "farms": "Fincas",
+    "plots": "Parcelas",
+    "active_plans": "Planes activos",
+    "no_plans": "No hay planes de siembra guardados",
+    "reports": "Reportes",
+    "gallery": "Galeria",
+    "nueva": "Nueva",
+    "nueva_siembra": "Nueva siembra",
+    "siembra": "Siembra",
+    "statistics": "Estadisticas",
+    "my_farms": "Mis Fincas",
+    "view_all": "Ver todas",
+    "active": "activa",
+    "tasks": "tareas"
+  },
+  "summary": {
+    "title": "Resumen",
+    "subtitle": "Estado general de tu finca",
+    "farms": "Fincas",
+    "plots": "Parcelas",
+    "active_services": "Servicios activos",
+    "registered_farms": "Registradas",
+    "available_plots": "Disponibles",
+    "enabled_now": "Activados ahora",
+    "services_status": "Estado de servicios",
+    "updated_live": "Actualizado",
+    "camera": "Camara",
+    "wifi": "Wifi",
+    "storage": "Memoria interna",
+    "location": "Ubicacion",
+    "active": "Activo",
+    "inactive": "Inactivo"
+  },
+  "profile": {
+    "title": "Perfil",
+    "user": "Usuario",
+    "active_profile": "Perfil activo",
+    "email": "Correo",
+    "registered_email": "Correo registrado",
+    "personal_data": "Datos personales",
+    "account_info": "Informacion de cuenta",
+    "password": "Contrasena",
+    "password_hint": "Actualiza tu acceso de forma segura",
+    "change": "Cambiar",
+    "change_password": "Cambiar contrasena",
+    "current_password": "Contrasena actual",
+    "new_password": "Nueva contrasena",
+    "confirm_password": "Confirmar contrasena",
+    "uploading_photo": "Subiendo foto..."
+  },
+  "services": {
+    "title": "Servicios",
+    "subtitle": "Componentes del dispositivo",
+    "test_camera": "Probar camara",
+    "view_map": "Ver en mapa",
+    "open_gps": "Abrir GPS"
+  },
+  "location": {
+    "title": "Ubicacion",
+    "subtitle": "Mapa con tu posicion actual",
+    "updating": "Buscando...",
+    "update": "Actualizar",
+    "go_services": "Ir a Servicios",
+    "open_map": "Abrir mapa"
+  }
+}

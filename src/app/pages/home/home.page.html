@@ -1,0 +1,128 @@
+<ion-content [fullscreen]="true">
+  <div class="header">
+    <div class="top-row">
+      <div class="user-box">
+        <div class="avatar">
+          <img
+            *ngIf="profile?.avatar_url as avatarUrl; else initialsAvatar"
+            [src]="avatarUrl"
+            alt="Foto de perfil"
+          />
+             
+          <ng-template #initialsAvatar> {{ profileInitials }} </ng-template>
+        </div>
+        <div>
+          <p>{{ 'home.welcome' | translate }}</p>
+          <p *ngIf="profile">{{ profile.nombre }} {{ profile.apellido }}</p>
+        </div>
+      </div>
+
+      <div class="icons">
+        <ion-icon name="notifications-outline"></ion-icon>
+      </div>
+    </div>
+
+    <div class="stats-row">
+      <div class="stat-card">
+        <ion-icon name="location-outline"></ion-icon>
+        <div>
+          <h1>{{ fincas.length }}</h1>
+          <p>{{ 'home.farms' | translate }}</p>
+        </div>
+      </div>
+
+      <div class="stat-card">
+        <ion-icon name="leaf-outline"></ion-icon>
+        <div>
+          <h1>{{ planesSiembra.length }}</h1>
+          <p>{{ 'home.active_plans' | translate }}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="content">
+    <div class="options-row">
+      <div class="option-card finca-action ion-activatable" routerLink="/tareas" routerDirection="root">
+        <div class="option-icon red">
+          <ion-icon name="bug-outline"></ion-icon>
+        </div>
+        <h4>Tareas</h4>
+        <ion-ripple-effect></ion-ripple-effect>
+      </div>
+
+      <div class="option-card finca-action ion-activatable" routerLink="/finca" routerDirection="root">
+        <div class="option-icon blue">
+          <ion-icon name="camera-outline"></ion-icon>
+        </div>
+        <h4>{{ 'home.nueva_siembra' | translate }}</h4>
+        <ion-ripple-effect></ion-ripple-effect>
+      </div>
+
+      <div class="option-card">
+        <div class="option-icon orange">
+          <ion-icon name="trending-up-outline"></ion-icon>
+        </div>
+        <h4>{{ 'home.statistics' | translate }}</h4>
+      </div>
+    </div>
+
+    <div class="section-title">
+      <h3>{{ 'home.active_plans' | translate }}</h3>
+      <span>{{ 'home.view_all' | translate }}</span>
+    </div>
+
+    <div class="empty-state" *ngIf="planesSiembra.length === 0">
+      {{ 'home.no_plans' | translate }}
+    </div>
+
+    <div class="farm-card" *ngFor="let plan of planesSiembra" [routerLink]="['/planes', plan.id]" routerDirection="forward">
+      <div class="farm-icon">
+        <ion-icon name="leaf-outline"></ion-icon>
+      </div>
+
+      <div class="farm-info">
+        <h3>{{ plan.codigo_plan_siembra }}</h3>
+        <p>
+          {{ getNombreFinca(plan.codigo_finca) }} - {{ getNombreCultivo(plan.codigo_cultivo) }}
+        </p>
+        <p>
+          {{ plan.fecha_propuesta }} - {{ plan.superficie_siembra }} ha
+        </p>
+      </div>
+
+      <span class="status">{{ 'home.active' | translate }}</span>
+
+      <ion-icon class="arrow" name="chevron-forward-outline"></ion-icon>
+    </div>
+  </div>
+</ion-content>
+
+<ion-footer>
+  <ion-tab-bar slot="bottom">
+    <ion-tab-button routerLink="/home" routerDirection="root">
+      <ion-icon name="home-outline"></ion-icon>
+      <ion-label>{{ 'tabs.home' | translate }}</ion-label>
+    </ion-tab-button>
+
+    <ion-tab-button routerLink="/ubicacion" routerDirection="root">
+      <ion-icon name="location-outline"></ion-icon>
+      <ion-label>{{ 'tabs.location' | translate }}</ion-label>
+    </ion-tab-button>
+
+    <ion-tab-button routerLink="/resumen" routerDirection="root">
+      <ion-icon name="bar-chart-outline"></ion-icon>
+      <ion-label>{{ 'tabs.summary' | translate }}</ion-label>
+    </ion-tab-button>
+
+    <ion-tab-button tab="perfil" routerLink="/perfil">
+      <ion-icon name="person-outline"></ion-icon>
+      <ion-label>{{ 'tabs.profile' | translate }}</ion-label>
+    </ion-tab-button>
+
+    <ion-tab-button routerLink="/servicios" routerDirection="root">
+      <ion-icon name="settings-outline"></ion-icon>
+      <ion-label>{{ 'tabs.services' | translate }}</ion-label>
+    </ion-tab-button>
+  </ion-tab-bar>
+</ion-footer>

@@ -1,0 +1,126 @@
+ion-content {
+  --background: var(--finca-bg, #f8f8f3);
+}
+
+ion-toolbar {
+  --background: #087b18;
+  --color: #ffffff;
+}
+
+.form-page {
+  background: var(--finca-bg, #f8f8f3);
+  min-height: 100%;
+  padding: 22px 18px 28px;
+}
+
+.intro {
+  margin-bottom: 18px;
+}
+
+.intro h1 {
+  color: var(--finca-text, #152016);
+  font-size: 28px;
+  margin: 0 0 6px;
+}
+
+.intro p {
+  color: var(--finca-muted, #667066);
+  font-size: 14px;
+  margin: 0;
+}
+
+form {
+  display: block;
+}
+
+ion-list {
+  background: transparent;
+  margin-bottom: 18px;
+}
+
+ion-item {
+  --background: var(--finca-card, #ffffff);
+  --border-color: var(--finca-border, #e1e6df);
+  --color: var(--finca-text, #152016);
+  --highlight-color-focused: #087b18;
+  --border-radius: 12px;
+  --padding-start: 14px;
+  --inner-padding-end: 14px;
+  border-radius: 12px;
+  margin-bottom: 12px;
+}
+
+ion-input,
+ion-select {
+  --color: var(--finca-text, #152016);
+  --placeholder-color: var(--finca-muted, #667066);
+  font-size: 16px;
+}
+
+ion-label {
+  font-size: 16px;
+}
+
+.select-row ion-label {
+  font-size: 13px;
+}
+
+.select-right {
+  font-size: 13px;
+  justify-content: flex-end;
+  text-align: right;
+  width: 100%;
+}
+
+.select-right::part(text) {
+  text-align: right;
+}
+
+.select-right::part(icon) {
+  margin-inline-start: 8px;
+}
+
+.inline-fields {
+  display: grid;
+  gap: 12px;
+  grid-template-columns: 1fr 1fr;
+}
+
+ion-button {
+  --background: #087b18;
+  --background-activated: #076915;
+  --border-radius: 12px;
+  height: 48px;
+  margin-top: 6px;
+  text-transform: none;
+}
+
+.export-button {
+  --border-color: #087b18;
+  --color: #087b18;
+}
+
+.message {
+  color: var(--finca-success, #087b18);
+  font-size: 14px;
+  font-weight: 600;
+  margin: 14px 0 0;
+  text-align: center;
+}
+
+@media (max-width: 420px) {
+  .inline-fields {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  :host {
+    --finca-bg: #101510;
+    --finca-card: #1b211b;
+    --finca-border: #334033;
+    --finca-text: #eef4ee;
+    --finca-muted: #b8c3b8;
+    --finca-success: #75d986;
+  }
+}

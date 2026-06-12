@@ -1,0 +1,149 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/home"></ion-back-button>
+    </ion-buttons>
+    <ion-title>{{ planEditandoId ? 'Editar plan' : 'Plan de siembra' }}</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <div class="form-page">
+    <form (ngSubmit)="guardarSiembra()">
+      <ion-list>
+        <ion-item>
+          <ion-label position="stacked">Codigo plan de siembra</ion-label>
+          <ion-input
+            name="codigo_plan_siembra"
+            [(ngModel)]="siembra.codigo_plan_siembra"
+            readonly="true"
+            required
+          ></ion-input>
+        </ion-item>
+
+        <ion-item>
+          <ion-label position="stacked">Fecha propuesta</ion-label>
+          <ion-input
+            name="fecha_propuesta"
+            type="date"
+            [(ngModel)]="siembra.fecha_propuesta"
+            required
+          ></ion-input>
+        </ion-item>
+
+        <ion-item class="select-row">
+          <ion-label position="stacked">Finca</ion-label>
+          <ion-select
+            class="select-right"
+            name="codigo_finca"
+            [(ngModel)]="siembra.codigo_finca"
+            interface="alert"
+            required
+          >
+            <ion-select-option
+              *ngFor="let finca of fincas"
+              [value]="finca.codigo"
+            >
+              {{ finca.nombre }}
+            </ion-select-option>
+          </ion-select>
+        </ion-item>
+
+        <ion-item class="select-row">
+          <ion-label position="stacked">Cultivo</ion-label>
+          <ion-select
+            class="select-right"
+            name="codigo_cultivo"
+            [(ngModel)]="siembra.codigo_cultivo"
+            interface="alert"
+            required
+          >
+            <ion-select-option
+              *ngFor="let cultivo of cultivos"
+              [value]="cultivo.codigo"
+            >
+              {{ cultivo.nombre }}
+            </ion-select-option>
+          </ion-select>
+        </ion-item>
+
+        <ion-item>
+          <ion-label position="stacked">Superficie a sembrar (ha)</ion-label>
+          <ion-input
+            name="superficie_siembra"
+            type="number"
+            [(ngModel)]="siembra.superficie_siembra"
+            required
+          ></ion-input>
+        </ion-item>
+
+        <ion-item>
+          <ion-label position="stacked">pH del suelo</ion-label>
+          <ion-input
+            name="ph_suelo"
+            type="number"
+            [(ngModel)]="siembra.ph_suelo"
+          ></ion-input>
+        </ion-item>
+
+        <ion-item>
+          <ion-label position="stacked">Textura del suelo</ion-label>
+          <ion-input
+            name="textura_suelo"
+            [(ngModel)]="siembra.textura_suelo"
+          ></ion-input>
+        </ion-item>
+
+        <ion-item>
+          <ion-label position="stacked">Materia organica (%)</ion-label>
+          <ion-input
+            name="materia_organica"
+            type="number"
+            [(ngModel)]="siembra.materia_organica"
+          ></ion-input>
+        </ion-item>
+
+        <div class="inline-fields">
+          <ion-item>
+            <ion-label position="stacked"
+              >Vel. infiltracion min. (cm/h)</ion-label
+            >
+            <ion-input
+              name="vel_infiltracion_min"
+              type="number"
+              [(ngModel)]="siembra.vel_infiltracion_min"
+            ></ion-input>
+          </ion-item>
+
+          <ion-item>
+            <ion-label position="stacked"
+              >Vel. infiltracion max. (cm/h)</ion-label
+            >
+            <ion-input
+              name="vel_infiltracion_max"
+              type="number"
+              [(ngModel)]="siembra.vel_infiltracion_max"
+            ></ion-input>
+          </ion-item>
+        </div>
+
+        <ion-item class="select-row" *ngIf="planEditandoId">
+          <ion-label position="stacked">Estado</ion-label>
+          <ion-select
+            class="select-right"
+            name="estado"
+            [(ngModel)]="siembra.estado"
+            interface="alert"
+            required
+          >
+            <ion-select-option value="activo">Activo</ion-select-option>
+            <ion-select-option value="inactivo">Inactivo</ion-select-option>
+          </ion-select>
+        </ion-item>
+      </ion-list>
+      <ion-button expand="block" type="submit">
+        {{ planEditandoId ? 'Actualizar siembra' : 'Guardar siembra' }}
+      </ion-button>
+    </form>
+  </div>
+</ion-content>

@@ -1,0 +1,117 @@
+{
+  "common": {
+    "cancel": "Cancel",
+    "save": "Save",
+    "saving": "Saving...",
+    "loading_profile": "Loading profile..."
+  },
+  "tabs": {
+    "home": "Home",
+    "location": "Location",
+    "summary": "Summary",
+    "profile": "Profile",
+    "services": "Services"
+  },
+  "login": {
+    "title": "Sign in",
+    "login": "Sign in",
+    "register": "Create account",
+    "helper_login": "Sign in with your username, email and password or continue with Google.",
+    "helper_register": "Create your account with your personal data, username and password.",
+    "name": "First name",
+    "last_name": "Last name",
+    "birth_date": "Birth date",
+    "gender": "Gender",
+    "female": "Female",
+    "male": "Male",
+    "username": "Username",
+    "email": "Email",
+    "identifier": "Username or email",
+    "password": "Password",
+    "confirm_password": "Confirm password",
+    "processing": "Processing...",
+    "or": "or",
+    "google": "Continue with Google",
+    "connecting": "Connecting...",
+    "success": {
+      "created": "Account created. Check your email to confirm access."
+    },
+    "errors": {
+      "missing_login": "Enter your username or email and password.",
+      "missing_register": "Complete all fields to create your account.",
+      "short_password": "Password must be at least 6 characters.",
+      "password_mismatch": "Passwords do not match.",
+      "generic": "The action could not be completed.",
+      "invalid_credentials": "Username, email or password is incorrect.",
+      "username_not_found": "We could not find that username.",
+      "email_registered": "That email already has an account. Try signing in."
+    }
+  },
+  "home": {
+    "welcome": "Welcome",
+    "farms": "Farms",
+    "plots": "Plots",
+    "active_plans": "Active plans",
+    "no_plans": "No planting plans saved",
+    "reports": "Reports",
+    "gallery": "Gallery",
+    "new": "new",
+    "nueva_siembra": "New planting",
+    "siembra": "Siembra",
+    "statistics": "Statistics",
+    "my_farms": "My farms",
+    "view_all": "View all",
+    "active": "active",
+    "tasks": "tasks"
+  },
+  "summary": {
+    "title": "Summary",
+    "subtitle": "General status of your farm",
+    "farms": "Farms",
+    "plots": "Plots",
+    "active_services": "Active services",
+    "registered_farms": "Registered",
+    "available_plots": "Available",
+    "enabled_now": "Enabled now",
+    "services_status": "Services status",
+    "updated_live": "Updated",
+    "camera": "Camera",
+    "wifi": "Wifi",
+    "storage": "Internal storage",
+    "location": "Location",
+    "active": "Active",
+    "inactive": "Inactive"
+  },
+  "profile": {
+    "title": "Profile",
+    "user": "Username",
+    "active_profile": "Active profile",
+    "email": "Email",
+    "registered_email": "Registered email",
+    "personal_data": "Personal data",
+    "account_info": "Account information",
+    "password": "Password",
+    "password_hint": "Update your access securely",
+    "change": "Change",
+    "change_password": "Change password",
+    "current_password": "Current password",
+    "new_password": "New password",
+    "confirm_password": "Confirm password",
+    "uploading_photo": "Uploading photo..."
+  },
+  "services": {
+    "title": "Services",
+    "subtitle": "Device components",
+    "test_camera": "Test camera",
+    "view_map": "View map",
+    "open_gps": "Open GPS"
+  },
+  "location": {
+    "title": "Location",
+    "subtitle": "Map with your current position",
+    "updating": "Searching...",
+    "update": "Update",
+    "go_services": "Go to Services",
+    "open_map": "Open map"
+  }
+}

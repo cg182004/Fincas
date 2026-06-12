@@ -1,0 +1,168 @@
+.login-card {
+  width: 100%;
+  max-width: 430px;
+  margin: 0 auto;
+  padding: 24px 20px;
+}
+
+.login-card h1 {
+  font-size: 30px;
+  font-weight: 800;
+  margin-bottom: 8px;
+  color: #ffffff;
+}
+
+.login-card > p {
+  font-size: 14px;
+  color: #b8b8b8;
+  margin-bottom: 22px;
+}
+
+/* Segmento Entrar / Crear cuenta */
+ion-segment {
+  background: #1f1f1f;
+  border-radius: 16px;
+  padding: 5px;
+  margin-bottom: 24px;
+}
+
+ion-segment-button {
+  --color: #9ca3af;
+  --color-checked: #ffffff;
+  --indicator-color: #2f7df6;
+  --border-radius: 13px;
+  font-weight: 700;
+  text-transform: none;
+}
+
+/* Formulario */
+.email-form {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+/* Caja elegante para cada input */
+/* Caja rectangular para cada input */
+.email-form ion-item {
+  --background: #1f1f1f;
+  --border-color: transparent;
+  --highlight-color-focused: transparent;
+  --highlight-color-valid: transparent;
+  --highlight-color-invalid: transparent;
+  --inner-border-width: 0;
+  --padding-start: 16px;
+  --padding-end: 16px;
+  --inner-padding-end: 0;
+
+  border: 1px solid #333;
+  border-radius: 4px; /* menos ovalado */
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.18);
+  min-height: 72px;
+  transition: 0.2s ease;
+}
+
+.email-form ion-item:focus-within {
+  border-color: #2f7df6;
+  box-shadow: 0 0 0 2px rgba(47, 125, 246, 0.18);
+}
+
+/* Botón rectangular */
+.email-form ion-button {
+  margin-top: 10px;
+  height: 54px;
+  --border-radius: 4px; /* rectangular */
+  --background: #2f7df6;
+  --background-hover: #256bd6;
+  --background-activated: #1f5fc8;
+  color: #ffffff;
+  font-size: 15px;
+  font-weight: 800;
+  letter-spacing: 1px;
+}
+
+/* Efecto cuando el usuario toca el campo */
+.email-form ion-item:focus-within {
+  border-color: #2f7df6;
+  box-shadow: 0 0 0 3px rgba(47, 125, 246, 0.18);
+}
+
+/* Label */
+.email-form ion-label {
+  color: #b8b8b8 !important;
+  font-size: 17px !important;
+  font-weight: 600;
+  margin-bottom: 6px;
+}
+
+/* Texto escrito */
+.email-form ion-input {
+  --color: #ffffff;
+  --placeholder-color: #777;
+  font-size: 17px;
+  font-weight: 500;
+}
+
+.email-form ion-button.password-toggle {
+  --background: transparent;
+  --background-activated: transparent;
+  --background-hover: transparent;
+  --box-shadow: none;
+  --color: #b8b8b8;
+  --padding-start: 8px;
+  --padding-end: 0;
+  height: 40px;
+  margin: 18px 0 0;
+}
+
+.password-toggle ion-icon {
+  font-size: 22px;
+}
+
+/* Select de género */
+.email-form ion-select {
+  --color: #ffffff;
+  font-size: 17px;
+  font-weight: 500;
+}
+
+/* Botón principal */
+.email-form ion-button {
+  margin-top: 10px;
+  height: 54px;
+  --border-radius: 15px;
+  --background: #2f7df6;
+  --background-hover: #256bd6;
+  --background-activated: #1f5fc8;
+  color: #ffffff;
+  font-size: 15px;
+  font-weight: 800;
+  letter-spacing: 1px;
+}
+
+/* Mensajes */
+.auth-message {
+  margin: 14px 4px 0;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+/* Separador */
+.login-divider {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin: 24px 0;
+  color: #9ca3af;
+}
+
+.login-divider span {
+  flex: 1;
+  height: 1px;
+  background: #3a3a3a;
+}
+
+.login-divider p {
+  margin: 0;
+  font-size: 14px;
+}

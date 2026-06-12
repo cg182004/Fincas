@@ -1,0 +1,93 @@
+<ion-content [fullscreen]="true">
+  <div class="services-header">
+    <h1>{{ 'services.title' | translate }}</h1>
+    <p>{{ 'services.subtitle' | translate }}</p>
+  </div>
+
+  <div class="services-content">
+    <ng-container *ngFor="let control of deviceControls">
+      <div class="device-card">
+        <div class="device-icon">
+          <ion-icon [name]="control.icon"></ion-icon>
+        </div>
+
+        <div class="device-info">
+          <h3>{{ control.title }}</h3>
+          <p>{{ control.detail }}</p>
+          <span>{{ control.status }}</span>
+        </div>
+
+        <div class="device-actions">
+          <ion-button
+            *ngIf="control.key === 'camera'"
+            class="action-button"
+            size="small"
+            (click)="testCamera(control)"
+          >
+            {{ 'services.test_camera' | translate }}
+          </ion-button>
+
+          <ion-button
+            *ngIf="control.key === 'location' && lastLocation"
+            class="action-button outline"
+            size="small"
+            fill="outline"
+            (click)="openLocationMap()"
+          >
+            {{ 'services.view_map' | translate }}
+          </ion-button>
+
+          <ion-button
+            *ngIf="control.key === 'location' && showLocationSettingsButton"
+            class="action-button outline"
+            size="small"
+            fill="outline"
+            (click)="openLocationSettings()"
+          >
+            {{ 'services.open_gps' | translate }}
+          </ion-button>
+        </div>
+
+        <ng-container *ngIf="control.key !== 'camera'">
+          <ion-toggle
+            [checked]="control.enabled"
+            (ionChange)="toggleDevice(control.key, $event.detail.checked)"
+          ></ion-toggle>
+        </ng-container>
+      </div>
+
+      <div class="language-panel" *ngIf="control.key === 'location'">
+        <app-language-switcher></app-language-switcher>
+      </div>
+    </ng-container>
+  </div>
+</ion-content>
+
+<ion-footer>
+  <ion-tab-bar slot="bottom">
+    <ion-tab-button routerLink="/home" routerDirection="root">
+      <ion-icon name="home-outline"></ion-icon>
+      <ion-label>{{ 'tabs.home' | translate }}</ion-label>
+    </ion-tab-button>
+
+    <ion-tab-button routerLink="/ubicacion" routerDirection="root">
+      <ion-icon name="location-outline"></ion-icon>
+      <ion-label>{{ 'tabs.location' | translate }}</ion-label>
+    </ion-tab-button>
+
+    <ion-tab-button routerLink="/resumen" routerDirection="root">
+      <ion-icon name="bar-chart-outline"></ion-icon>
+      <ion-label>{{ 'tabs.summary' | translate }}</ion-label>
+    </ion-tab-button>
+
+    <ion-tab-button routerLink="/perfil" routerDirection="root">
+      <ion-icon name="person-outline"></ion-icon>
+      <ion-label>{{ 'tabs.profile' | translate }}</ion-label>
+    </ion-tab-button>
+
+    <ion-tab-button routerLink="/servicios" routerDirection="root">
+      <ion-icon name="settings-outline"></ion-icon>
+      <ion-label>{{ 'tabs.services' | translate }}</ion-label>
+    </ion-tab-button>
+  </ion-tab-bar>
+</ion-footer>

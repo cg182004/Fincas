@@ -1,0 +1,12 @@
+<ion-button
+  expand="block"
+  type="button"
+  [disabled]="isLoading"
+  (click)="loginGoogle()"
+>
+  {{ (isLoading ? 'login.connecting' : 'login.google') | translate }}
+</ion-button>
+
+@if (errorMessage) {
+  <p class="login-error">{{ errorMessage }}</p>
+}

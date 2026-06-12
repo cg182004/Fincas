@@ -1,0 +1,138 @@
+ion-content {
+  --background: var(--location-background, #f8f8f3);
+}
+
+.location-header {
+  background: #087b18;
+  color: #fff;
+  padding: 36px 20px 28px;
+}
+
+.location-header h1,
+.location-header p {
+  margin: 0;
+}
+
+.location-header h1 {
+  font-size: 28px;
+  font-weight: 800;
+}
+
+.location-header p {
+  color: #d8ecd9;
+  font-size: 14px;
+  margin-top: 5px;
+}
+
+.location-content {
+  display: grid;
+  gap: 14px;
+  padding: 18px;
+}
+
+.map-shell {
+  background: var(--location-card-background, #fff);
+  border-radius: 8px;
+  box-shadow: var(--location-card-shadow, 0 3px 10px rgba(0, 0, 0, 0.12));
+  height: min(56vh, 460px);
+  min-height: 330px;
+  overflow: hidden;
+}
+
+.map-shell iframe,
+.empty-map {
+  border: 0;
+  height: 100%;
+  width: 100%;
+}
+
+.empty-map {
+  align-items: center;
+  background: #e8f4ea;
+  color: #087b18;
+  display: flex;
+  justify-content: center;
+}
+
+.empty-map ion-icon {
+  font-size: 56px;
+}
+
+.status-panel {
+  background: var(--location-card-background, #fff);
+  border-radius: 8px;
+  box-shadow: var(--location-card-shadow, 0 3px 10px rgba(0, 0, 0, 0.12));
+  color: var(--location-heading-color, #222);
+  display: grid;
+  gap: 12px;
+  padding: 16px;
+}
+
+.status-panel span {
+  color: #0d8b20;
+  font-size: 13px;
+  font-weight: 700;
+  overflow-wrap: anywhere;
+}
+
+.actions {
+  display: flex;
+  gap: 10px;
+}
+
+ion-button {
+  --background: #087b18;
+  --background-activated: #0a6816;
+  --background-hover: #0a6816;
+  --border-radius: 8px;
+  --box-shadow: none;
+  font-weight: 700;
+  text-transform: none;
+}
+
+ion-button[fill="outline"] {
+  --background: transparent;
+  --border-color: #087b18;
+  --color: #087b18;
+}
+
+ion-footer {
+  background: var(--location-card-background, #fff);
+}
+
+ion-tab-bar {
+  --background: var(--location-card-background, #fff);
+  --color: var(--location-muted-color, #555);
+  --color-selected: #087b18;
+  height: 65px;
+}
+
+@media (prefers-color-scheme: dark) {
+  :host {
+    --location-background: #101510;
+    --location-card-background: #1b211b;
+    --location-card-shadow: 0 3px 12px rgba(0, 0, 0, 0.38);
+    --location-heading-color: #eef4ee;
+    --location-muted-color: #b8c3b8;
+  }
+
+  .empty-map {
+    background: #203824;
+  }
+
+  ion-button[fill="outline"] {
+    --border-color: #7bd88a;
+    --color: #7bd88a;
+  }
+}
+
+@media (max-width: 420px) {
+  .actions {
+    flex-direction: column;
+  }
+
+  .map-shell {
+    height: 48vh;
+    min-height: 300px;
+  }
+}
