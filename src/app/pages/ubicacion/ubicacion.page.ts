@@ -1,9 +1,11 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
-import { RouterLink, Router } from '@angular/router';
+import { RouterLink } from '@angular/router';
+import { App } from '@capacitor/app';
 import { Browser } from '@capacitor/browser';
 import { Geolocation } from '@capacitor/geolocation';
+import { PluginListenerHandle, registerPlugin } from '@capacitor/core';
 import { IonButton, IonContent, IonFooter, IonIcon, IonLabel, IonTabBar, IonTabButton } from '@ionic/angular/standalone';
 import { TranslatePipe } from '@ngx-translate/core';
 import { addIcons } from 'ionicons';
@@ -21,6 +23,11 @@ interface CurrentLocation {
   accuracy: number;
 }
 
+interface LocationSettingsPlugin {
+  open(): Promise<void>;
+}
+
+const LocationSettings = registerPlugin<LocationSettingsPlugin>('LocationSettings');
 const LOCATION_SERVICE_ENABLED_KEY = 'appfincas.locationServiceEnabled';
 
 @Component({
@@ -30,14 +37,16 @@ const LOCATION_SERVICE_ENABLED_KEY = 'appfincas.locationServiceEnabled';
   standalone: true,
   imports: [IonButton, IonContent, IonFooter, IonIcon, IonLabel, IonTabBar, IonTabButton, CommonModule, RouterLink, TranslatePipe]
 })
-export class UbicacionPage implements OnInit {
+export class UbicacionPage implements OnInit, OnDestroy {
+  private resumeListener?: PluginListenerHandle;
   location?: CurrentLocation;
   mapUrl?: SafeResourceUrl;
   status = 'Buscando ubicacion actual...';
   loading = false;
   locationServiceEnabled = false;
+  showLocationSettingsButton = false;
 
-  constructor(private sanitizer: DomSanitizer, private router: Router) {
+  constructor(private sanitizer: DomSanitizer) {
     addIcons({
       'bar-chart-outline': barChartOutline,
       'home-outline': homeOutline,
@@ -49,32 +58,33 @@ export class UbicacionPage implements OnInit {
 
   ngOnInit() {
     void this.loadCurrentLocation();
+    void this.watchAppResume();
+  }
+
+  ngOnDestroy() {
+    void this.resumeListener?.remove();
   }
 
   async loadCurrentLocation() {
-    this.locationServiceEnabled = this.isLocationServiceEnabled();
-
-    if (!this.locationServiceEnabled) {
-      this.location = undefined;
-      this.mapUrl = undefined;
-      this.loading = false;
-      this.status = 'Primero activa Ubicacion en Servicios';
-      return;
-    }
-
     this.loading = true;
     this.status = 'Buscando ubicacion actual...';
+    this.showLocationSettingsButton = false;
 
     try {
       const location = await this.getCurrentLocation();
       this.location = location;
+      this.locationServiceEnabled = true;
+      this.setLocationServiceEnabled(true);
       this.mapUrl = this.sanitizer.bypassSecurityTrustResourceUrl(
         `https://maps.google.com/maps?q=${location.latitude},${location.longitude}&z=17&output=embed`
       );
-      this.status = `Actual: ${location.latitude.toFixed(5)}, ${location.longitude.toFixed(5)} | Precision: ${location.accuracy.toFixed(0)} m`;
+      this.status = 'Ubicacion activa';
     } catch (error) {
       this.location = undefined;
       this.mapUrl = undefined;
+      this.locationServiceEnabled = false;
+      this.showLocationSettingsButton = true;
+      this.setLocationServiceEnabled(false);
       this.status = error instanceof Error ? error.message : 'No se pudo obtener la ubicacion';
     } finally {
       this.loading = false;
@@ -91,12 +101,22 @@ export class UbicacionPage implements OnInit {
     });
   }
 
-  goToServices() {
-    void this.router.navigateByUrl('/servicios');
+  async openLocationSettings() {
+    try {
+      await LocationSettings.open();
+    } catch {
+      this.status = 'Abre la configuracion del telefono, activa la ubicacion y vuelve a la app.';
+    }
   }
 
-  private isLocationServiceEnabled() {
-    return localStorage.getItem(LOCATION_SERVICE_ENABLED_KEY) === 'true';
+  private setLocationServiceEnabled(enabled: boolean) {
+    localStorage.setItem(LOCATION_SERVICE_ENABLED_KEY, String(enabled));
+  }
+
+  private async watchAppResume() {
+    this.resumeListener = await App.addListener('resume', () => {
+      void this.loadCurrentLocation();
+    });
   }
 
   private async getCurrentLocation(): Promise<CurrentLocation> {

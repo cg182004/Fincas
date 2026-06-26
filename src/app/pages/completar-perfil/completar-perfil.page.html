@@ -1,0 +1,57 @@
+<ion-content [fullscreen]="true">
+  <main class="complete-profile-page">
+    <section class="complete-profile-card">
+      <h1>Crear cuenta</h1>
+      <p>Ese correo de Google no tiene una cuenta completa. Agrega tus datos para crearla.</p>
+
+      <form (ngSubmit)="submitProfile()" *ngIf="!isLoading && !errorMessage">
+        <ion-item>
+          <ion-label position="stacked">Nombre</ion-label>
+          <ion-input type="text" name="nombre" [(ngModel)]="nombre" [disabled]="isSaving" required></ion-input>
+        </ion-item>
+
+        <ion-item>
+          <ion-label position="stacked">Apellido</ion-label>
+          <ion-input type="text" name="apellido" [(ngModel)]="apellido" [disabled]="isSaving" required></ion-input>
+        </ion-item>
+
+        <ion-item>
+          <ion-label position="stacked">Correo</ion-label>
+          <ion-input type="email" name="email" [(ngModel)]="email" disabled></ion-input>
+        </ion-item>
+
+        <ion-item>
+          <ion-label position="stacked">Fecha de nacimiento</ion-label>
+          <ion-input type="date" name="fechaNacimiento" [(ngModel)]="fechaNacimiento" [disabled]="isSaving" required></ion-input>
+        </ion-item>
+
+        <ion-item>
+          <ion-label position="stacked">Genero</ion-label>
+          <ion-select name="genero" interface="popover" [(ngModel)]="genero" [disabled]="isSaving" required>
+            <ion-select-option value="femenino">Femenino</ion-select-option>
+            <ion-select-option value="masculino">Masculino</ion-select-option>
+          </ion-select>
+        </ion-item>
+
+        <ion-item>
+          <ion-label position="stacked">Nombre de usuario</ion-label>
+          <ion-input type="text" name="nombreUsuario" [(ngModel)]="nombreUsuario" [disabled]="isSaving" required></ion-input>
+        </ion-item>
+
+        <ion-button expand="block" type="submit" [disabled]="isSaving">
+          {{ isSaving ? 'Guardando...' : 'Guardar perfil' }}
+        </ion-button>
+      </form>
+
+      <p class="loading-message" *ngIf="isLoading">Cargando perfil...</p>
+
+      <ion-text color="danger" *ngIf="errorMessage">
+        <p class="profile-message">{{ errorMessage }}</p>
+      </ion-text>
+
+      <ion-button expand="block" type="button" *ngIf="errorMessage" (click)="goToLogin()">
+        OK
+      </ion-button>
+    </section>
+  </main>
+</ion-content>

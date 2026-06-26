@@ -1,0 +1,145 @@
+<ion-content [fullscreen]="true">
+  <div class="catalog-header">
+    <h1>Catalogo de fincas</h1>
+    <p>Fotos del avance por etapa del cultivo</p>
+  </div>
+
+  <div class="catalog-content">
+    <div class="capture-panel">
+      <div class="panel-title">
+        <ion-icon name="camera-outline"></ion-icon>
+        <div>
+          <h2>Nueva fotografia</h2>
+          <p>Registra como va el cultivo</p>
+        </div>
+      </div>
+
+      <ion-list>
+        <ion-item>
+          <ion-label position="stacked">Finca</ion-label>
+          <ion-select [(ngModel)]="codigoFinca" interface="alert">
+            <ion-select-option *ngFor="let finca of fincas" [value]="finca.codigo">
+              {{ finca.nombre }}
+            </ion-select-option>
+          </ion-select>
+        </ion-item>
+
+        <ion-item>
+          <ion-label position="stacked">Cultivo</ion-label>
+          <ion-select [(ngModel)]="codigoCultivo" interface="alert">
+            <ion-select-option *ngFor="let cultivo of cultivos" [value]="cultivo.codigo">
+              {{ cultivo.nombre }}
+            </ion-select-option>
+          </ion-select>
+        </ion-item>
+
+        <ion-item>
+          <ion-label position="stacked">Etapa</ion-label>
+          <ion-select [(ngModel)]="etapa" interface="alert">
+            <ion-select-option *ngFor="let etapaItem of etapas" [value]="etapaItem">
+              {{ etapaItem }}
+            </ion-select-option>
+          </ion-select>
+        </ion-item>
+
+        <ion-item>
+          <ion-label position="stacked">Observacion</ion-label>
+          <ion-textarea
+            [(ngModel)]="observacion"
+            autoGrow="true"
+            maxlength="220"
+            placeholder="Detalle breve del estado del cultivo"
+          ></ion-textarea>
+        </ion-item>
+      </ion-list>
+
+      <div class="photo-box" [class.has-photo]="fotoDataUrl">
+        <img *ngIf="fotoDataUrl; else emptyPhoto" [src]="fotoDataUrl" alt="Foto del cultivo" />
+
+        <ng-template #emptyPhoto>
+          <ion-icon name="images-outline"></ion-icon>
+          <span>Agrega una foto del cultivo</span>
+        </ng-template>
+      </div>
+
+      <div class="photo-actions">
+        <ion-button fill="outline" (click)="tomarFoto(cameraSource.Camera)">
+          <ion-icon slot="start" name="camera-outline"></ion-icon>
+          Camara
+        </ion-button>
+
+        <ion-button fill="outline" (click)="tomarFoto(cameraSource.Photos)">
+          <ion-icon slot="start" name="images-outline"></ion-icon>
+          Galeria
+        </ion-button>
+      </div>
+
+      <ion-button expand="block" [disabled]="!puedeGuardar" (click)="guardarRegistro()">
+        Guardar en catalogo
+      </ion-button>
+    </div>
+
+    <div class="filter-row">
+      <ion-label>Mostrar</ion-label>
+      <ion-select [(ngModel)]="filtroFinca" interface="alert">
+        <ion-select-option value="todas">Todas las fincas</ion-select-option>
+        <ion-select-option *ngFor="let finca of fincas" [value]="finca.codigo">
+          {{ finca.nombre }}
+        </ion-select-option>
+      </ion-select>
+    </div>
+
+    <div class="empty-state" *ngIf="registrosFiltrados.length === 0">
+      Todavia no hay fotos guardadas para este catalogo.
+    </div>
+
+    <div class="catalog-card" *ngFor="let registro of registrosFiltrados">
+      <img [src]="registro.foto_data_url" [alt]="registro.etapa" />
+
+      <div class="catalog-card-body">
+        <div class="card-heading">
+          <div>
+            <h3>{{ registro.nombre_finca }}</h3>
+            <p>{{ registro.nombre_cultivo }} - {{ registro.etapa }}</p>
+          </div>
+
+          <ion-button fill="clear" size="small" (click)="confirmarEliminar(registro)">
+            <ion-icon slot="icon-only" name="trash-outline"></ion-icon>
+          </ion-button>
+        </div>
+
+        <p class="observation" *ngIf="registro.observacion">{{ registro.observacion }}</p>
+        <span>{{ formatDate(registro.creado_en) }}</span>
+      </div>
+    </div>
+  </div>
+</ion-content>
+
+<ion-footer>
+  <ion-tab-bar slot="bottom">
+    <ion-tab-button routerLink="/home" routerDirection="root">
+      <ion-icon name="home-outline"></ion-icon>
+      <ion-label>{{ 'tabs.home' | translate }}</ion-label>
+    </ion-tab-button>
+
+    <ion-tab-button routerLink="/ubicacion" routerDirection="root">
+      <ion-icon name="location-outline"></ion-icon>
+      <ion-label>{{ 'tabs.location' | translate }}</ion-label>
+    </ion-tab-button>
+
+    <ion-tab-button routerLink="/resumen" routerDirection="root">
+      <ion-icon name="bar-chart-outline"></ion-icon>
+      <ion-label>{{ 'tabs.summary' | translate }}</ion-label>
+    </ion-tab-button>
+
+    <ion-tab-button routerLink="/perfil" routerDirection="root">
+      <ion-icon name="person-outline"></ion-icon>
+      <ion-label>{{ 'tabs.profile' | translate }}</ion-label>
+    </ion-tab-button>
+
+    <ion-tab-button routerLink="/servicios" routerDirection="root">
+      <ion-icon name="settings-outline"></ion-icon>
+      <ion-label>{{ 'tabs.services' | translate }}</ion-label>
+    </ion-tab-button>
+  </ion-tab-bar>
+</ion-footer>

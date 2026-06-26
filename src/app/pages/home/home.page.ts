@@ -1,10 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { getSupabaseClient } from 'src/app/supabase.client';
 import { TranslatePipe } from '@ngx-translate/core';
-import { IonContent, IonTabButton, IonLabel, IonFooter, IonTabBar, IonIcon, IonRippleEffect } from '@ionic/angular/standalone';
+import { IonContent, IonTabButton, IonLabel, IonFooter, IonTabBar, IonIcon, IonRippleEffect, IonFab, IonFabButton } from '@ionic/angular/standalone';
 import { SiembraRegistro, SiembraStorageService } from 'src/app/services/siembra-storage.service';
 import {
   homeOutline,
@@ -14,17 +14,24 @@ import {
   settingsOutline,
   leafOutline,
   wifiOutline,
+  add,
+  analyticsOutline,
   notificationsOutline,
-  cameraOutline,
   trendingUpOutline,
   bugOutline,
+  cubeOutline,
+  imagesOutline,
   chevronForwardOutline
 } from 'ionicons/icons';
 import { addIcons } from 'ionicons';
 
 interface UserProfile {
+  email?: string;
   nombre: string;
   apellido: string;
+  nombre_usuario?: string;
+  genero?: string;
+  fecha_nacimiento?: string;
   avatar_url: string | null;
 }
 
@@ -33,7 +40,7 @@ interface UserProfile {
   templateUrl: './home.page.html',
   styleUrls: ['./home.page.scss'],
   standalone: true,
-  imports: [IonIcon, IonTabBar, IonFooter, IonLabel, IonTabButton, IonContent, IonRippleEffect, CommonModule, FormsModule, RouterLink, TranslatePipe]
+  imports: [IonIcon, IonTabBar, IonFooter, IonLabel, IonTabButton, IonContent, IonRippleEffect, IonFab, IonFabButton, CommonModule, FormsModule, RouterLink, TranslatePipe]
 })
 export class HomePage implements OnInit {
   profile?: UserProfile;
@@ -53,13 +60,19 @@ export class HomePage implements OnInit {
     { codigo: 'CULT-003', nombre: 'Maiz' },
   ];
 
-  constructor(private siembraStorage: SiembraStorageService) {
+  constructor(
+    private siembraStorage: SiembraStorageService,
+    private router: Router
+  ) {
     addIcons({
       notificationsOutline,
+      add,
+      analyticsOutline,
       locationOutline,
       leafOutline,
       bugOutline,
-      cameraOutline,
+      cubeOutline,
+      imagesOutline,
       trendingUpOutline,
       chevronForwardOutline,
       homeOutline,
@@ -103,9 +116,9 @@ export class HomePage implements OnInit {
 
     const { data, error } = await supabase
       .from('profiles')
-      .select('nombre, apellido, avatar_url')
+      .select('nombre, apellido, email, nombre_usuario, genero, fecha_nacimiento, avatar_url')
       .eq('id', userData.user.id)
-      .single();
+      .maybeSingle();
 
     if (error) {
       this.errorMessage = 'No se pudo cargar el perfil';
@@ -113,8 +126,50 @@ export class HomePage implements OnInit {
       return;
     }
 
-    this.profile = data;
+    let profile = data;
+
+    if (!profile && userData.user.email) {
+      const normalizedUserEmail = this.normalizeEmail(userData.user.email);
+      const { data: emailProfiles, error: emailProfileError } = await supabase
+        .from('profiles')
+        .select('nombre, apellido, email, nombre_usuario, genero, fecha_nacimiento, avatar_url')
+        .ilike('email', `%${normalizedUserEmail}%`)
+        .limit(10);
+
+      if (emailProfileError) {
+        this.errorMessage = 'No se pudo cargar el perfil';
+        this.loading = false;
+        return;
+      }
+
+      profile = emailProfiles?.find((emailProfile) => {
+        return this.normalizeEmail(emailProfile.email) === normalizedUserEmail;
+      }) ?? null;
+    }
+
+    this.profile = profile ?? this.getFallbackProfile(userData.user);
     this.loading = false;
+  }
+
+  private getFallbackProfile(user: { email?: string; user_metadata?: Record<string, unknown> }): UserProfile {
+    const metadata = user.user_metadata ?? {};
+    const fullName = String(metadata['full_name'] ?? metadata['name'] ?? '').trim();
+    const [firstName, ...lastNameParts] = fullName.split(' ').filter(Boolean);
+    const email = user.email ?? '';
+
+    return {
+      nombre: String(metadata['given_name'] ?? firstName ?? email.split('@')[0] ?? 'Usuario'),
+      apellido: String(metadata['family_name'] ?? lastNameParts.join(' ') ?? ''),
+      email,
+      nombre_usuario: email.split('@')[0] ?? '',
+      genero: '',
+      fecha_nacimiento: '',
+      avatar_url: String(metadata['avatar_url'] ?? metadata['picture'] ?? '') || null
+    };
+  }
+
+  private normalizeEmail(email: string | null | undefined) {
+    return String(email ?? '').trim().toLowerCase();
   }
 
   async loadPlanesSiembra() {

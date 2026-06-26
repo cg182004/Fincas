@@ -1,13 +1,11 @@
 <ion-content [fullscreen]="true">
   <div class="profile-header">
-    <label class="avatar-picker">
-      <input
-        type="file"
-        accept="image/png,image/jpeg,image/webp"
-        [disabled]="uploadingAvatar"
-        (change)="uploadAvatar($event)"
-      />
-
+    <button
+      class="avatar-picker"
+      type="button"
+      [disabled]="uploadingAvatar"
+      (click)="openAvatarOptions()"
+    >
       <span class="avatar">
         <img *ngIf="profile?.avatar_url; else initialsAvatar" [src]="profile?.avatar_url" alt="Foto de perfil" />
 
@@ -19,7 +17,7 @@
       <span class="avatar-action">
         <ion-icon name="camera-outline"></ion-icon>
       </span>
-    </label>
+    </button>
 
     <h1>{{ 'profile.title' | translate }}</h1>
     <p *ngIf="profile">{{ profile.nombre }} {{ profile.apellido }}</p>
@@ -66,7 +64,7 @@
   </div>
 </div>
 
-<div class="password-card" *ngIf="profile">
+<div class="profile-card password-card" *ngIf="profile">
   <div class="profile-icon">
     <ion-icon name="shield-checkmark-outline"></ion-icon>
   </div>
@@ -79,8 +77,36 @@
 
   <ion-button size="small" (click)="openPasswordModal()">{{ 'profile.change' | translate }}</ion-button>
 </div>
+
+<div class="profile-card" *ngIf="profile">
+  <div class="profile-icon logout-icon">
+    <ion-icon name="log-out-outline"></ion-icon>
+  </div>
+
+  <div class="profile-info">
+    <h3>Cerrar sesion</h3>
+    <p>Salir de esta cuenta</p>
+    <span *ngIf="logoutMessage">{{ logoutMessage }}</span>
+  </div>
+
+  <ion-button
+    size="small"
+    color="danger"
+    (click)="logout()"
+    [disabled]="loggingOut"
+  >
+    {{ loggingOut ? 'Saliendo...' : 'Salir' }}
+  </ion-button>
+</div>
   </div>
 </ion-content>
+
+<ion-action-sheet
+  [isOpen]="isAvatarActionSheetOpen"
+  [header]="'profile.photo_options' | translate"
+  [buttons]="avatarActionButtons"
+  (didDismiss)="isAvatarActionSheetOpen = false"
+></ion-action-sheet>
 
 <ion-modal
   class="password-modal-dialog"

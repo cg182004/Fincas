@@ -51,6 +51,14 @@ ion-button {
   text-transform: none;
 }
 
+ion-toolbar ion-button {
+  --background: transparent;
+  --background-activated: rgba(255, 255, 255, 0.16);
+  --color: #ffffff;
+  height: 40px;
+  margin: 0;
+}
+
 .section-title {
   margin: 18px 0 12px;
 }
@@ -162,6 +170,7 @@ ion-button {
   background: rgba(9, 18, 10, 0.42);
   inset: 0;
   position: fixed;
+  animation: fade-in 90ms ease-out;
   z-index: 20;
 }
 
@@ -177,8 +186,22 @@ ion-button {
   position: fixed;
   top: 50%;
   transform: translate(-50%, -50%);
+  animation: modal-in 110ms ease-out;
   width: calc(100% - 32px);
   z-index: 21;
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+}
+
+@keyframes modal-in {
+  from {
+    opacity: 0;
+    transform: translate(-50%, calc(-50% + 8px));
+  }
 }
 
 .floating-form-header {

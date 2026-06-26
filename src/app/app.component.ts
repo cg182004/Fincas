@@ -55,6 +55,6 @@ export class AppComponent {
       });
     }
 
-    await this.router.navigateByUrl('/home');
+    await this.router.navigateByUrl('/completar-perfil');
   }
 }

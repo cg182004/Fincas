@@ -52,18 +52,45 @@
       </div>
 
       <div class="option-card finca-action ion-activatable" routerLink="/finca" routerDirection="root">
-        <div class="option-icon blue">
-          <ion-icon name="camera-outline"></ion-icon>
-        </div>
+        <ion-fab class="option-fab">
+          <ion-fab-button size="small">
+            <ion-icon name="add"></ion-icon>
+          </ion-fab-button>
+        </ion-fab>
         <h4>{{ 'home.nueva_siembra' | translate }}</h4>
         <ion-ripple-effect></ion-ripple-effect>
       </div>
 
-      <div class="option-card">
+      <div class="option-card finca-action ion-activatable" routerLink="/resumen" routerDirection="root">
         <div class="option-icon orange">
           <ion-icon name="trending-up-outline"></ion-icon>
         </div>
         <h4>{{ 'home.statistics' | translate }}</h4>
+        <ion-ripple-effect></ion-ripple-effect>
+      </div>
+
+      <div class="option-card finca-action ion-activatable" routerLink="/articulos" routerDirection="root">
+        <div class="option-icon green">
+          <ion-icon name="cube-outline"></ion-icon>
+        </div>
+        <h4>{{ 'home.articles' | translate }}</h4>
+        <ion-ripple-effect></ion-ripple-effect>
+      </div>
+
+      <div class="option-card finca-action ion-activatable" routerLink="/catalogo-fincas" routerDirection="root">
+        <div class="option-icon blue">
+          <ion-icon name="images-outline"></ion-icon>
+        </div>
+        <h4>{{ 'home.farm_catalog' | translate }}</h4>
+        <ion-ripple-effect></ion-ripple-effect>
+      </div>
+
+      <div class="option-card finca-action ion-activatable" routerLink="/recomendaciones" routerDirection="root">
+        <div class="option-icon orange">
+          <ion-icon name="analytics-outline"></ion-icon>
+        </div>
+        <h4>{{ 'home.recommendations' | translate }}</h4>
+        <ion-ripple-effect></ion-ripple-effect>
       </div>
     </div>
 

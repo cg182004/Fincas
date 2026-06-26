@@ -1,14 +1,18 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
+import { Camera, CameraResultType, CameraSource } from '@capacitor/camera';
 import { getSupabaseClient } from 'src/app/supabase.client';
-import { TranslatePipe } from '@ngx-translate/core';
-import { IonButton, IonContent, IonFooter, IonIcon, IonInput, IonItem, IonLabel, IonModal, IonTabBar, IonTabButton } from '@ionic/angular/standalone';
+import { AuthService } from 'src/app/services/auth';
+import { TranslatePipe, TranslateService } from '@ngx-translate/core';
+import { ActionSheetButton } from '@ionic/angular';
+import { IonActionSheet, IonButton, IonContent, IonFooter, IonIcon, IonInput, IonItem, IonLabel, IonModal, IonTabBar, IonTabButton } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
 import {
   barChartOutline,
   cameraOutline,
+  imageOutline,
   homeOutline,
   locationOutline,
   mailOutline,
@@ -16,7 +20,8 @@ import {
   settingsOutline,
   shieldCheckmarkOutline,
   eyeOffOutline,
-  eyeOutline
+  eyeOutline,
+  logOutOutline
 } from 'ionicons/icons';
 
 interface ProfileItem {
@@ -27,6 +32,7 @@ interface ProfileItem {
 }
 
 interface UserProfile {
+  id?: string;
   nombre: string;
   apellido: string;
   email: string;
@@ -41,7 +47,7 @@ interface UserProfile {
   templateUrl: './perfil.page.html',
   styleUrls: ['./perfil.page.scss'],
   standalone: true,
-  imports: [IonButton, IonContent, IonFooter, IonIcon, IonInput, IonItem, IonLabel, IonModal, IonTabBar, IonTabButton, CommonModule, FormsModule, RouterLink, TranslatePipe]
+  imports: [IonActionSheet, IonButton, IonContent, IonFooter, IonIcon, IonInput, IonItem, IonLabel, IonModal, IonTabBar, IonTabButton, CommonModule, FormsModule, RouterLink, TranslatePipe]
 })
 export class PerfilPage implements OnInit {
   profile?: UserProfile;
@@ -50,6 +56,7 @@ export class PerfilPage implements OnInit {
   errorMessage = '';
   avatarMessage = '';
   uploadingAvatar = false;
+  isAvatarActionSheetOpen = false;
   currentPassword = '';
   newPassword = '';
   confirmPassword = '';
@@ -59,6 +66,8 @@ export class PerfilPage implements OnInit {
   passwordMessage = '';
   changingPassword = false;
   isPasswordModalOpen = false;
+  loggingOut = false;
+  logoutMessage = '';
   profileItems: ProfileItem[] = [
     {
       title: 'Cuenta',
@@ -81,16 +90,22 @@ export class PerfilPage implements OnInit {
 
   ];
 
-  constructor() {
+  constructor(
+    private authService: AuthService,
+    private router: Router,
+    private translateService: TranslateService
+  ) {
     addIcons({
       personOutline,
       mailOutline,
       shieldCheckmarkOutline,
       cameraOutline,
+      imageOutline,
       homeOutline,
       locationOutline,
       barChartOutline,
       settingsOutline,
+      logOutOutline,
       'eye-off-outline': eyeOffOutline,
       'eye-outline': eyeOutline
     });
@@ -115,6 +130,77 @@ export class PerfilPage implements OnInit {
     return `${nombre}${apellido}`.toUpperCase() || 'AD';
   }
 
+  get avatarActionButtons(): ActionSheetButton[] {
+    return [
+      {
+        text: this.translateService.instant('profile.take_photo'),
+        icon: 'camera-outline',
+        handler: () => {
+          void this.pickAvatarFrom(CameraSource.Camera);
+        }
+      },
+      {
+        text: this.translateService.instant('profile.choose_gallery'),
+        icon: 'image-outline',
+        handler: () => {
+          void this.pickAvatarFrom(CameraSource.Photos);
+        }
+      },
+      {
+        text: this.translateService.instant('common.cancel'),
+        role: 'cancel'
+      }
+    ];
+  }
+
+  openAvatarOptions() {
+    if (this.uploadingAvatar) {
+      return;
+    }
+
+    this.avatarMessage = '';
+    this.isAvatarActionSheetOpen = true;
+  }
+
+  async pickAvatarFrom(source: CameraSource) {
+    if (!this.userId || !this.profile) {
+      return;
+    }
+
+    this.avatarMessage = '';
+
+    try {
+      if (source === CameraSource.Camera) {
+        const permission = await Camera.requestPermissions({ permissions: ['camera'] });
+
+        if (permission.camera !== 'granted') {
+          this.avatarMessage = 'Permiso de camara denegado';
+          return;
+        }
+      }
+
+      const photo = await Camera.getPhoto({
+        quality: 65,
+        allowEditing: false,
+        resultType: CameraResultType.DataUrl,
+        source,
+        width: 900,
+        height: 900
+      });
+
+      if (!photo.dataUrl) {
+        this.avatarMessage = 'No se pudo leer la foto seleccionada';
+        return;
+      }
+
+      const extension = photo.format || 'jpeg';
+      const file = this.dataUrlToFile(photo.dataUrl, `avatar.${extension}`);
+      await this.saveAvatarFile(file, photo.dataUrl);
+    } catch (error) {
+      this.avatarMessage = error instanceof Error ? error.message : 'No se pudo cargar la foto';
+    }
+  }
+
   async uploadAvatar(event: Event) {
     const input = event.target as HTMLInputElement;
     const file = input.files?.[0];
@@ -124,20 +210,35 @@ export class PerfilPage implements OnInit {
     }
 
     this.avatarMessage = '';
+    await this.saveAvatarFile(file);
+    input.value = '';
+  }
+
+  private async saveAvatarFile(file: File, previewUrl?: string) {
+    const currentProfile = this.profile;
+
+    if (!this.userId || !currentProfile) {
+      return;
+    }
 
     if (!['image/png', 'image/jpeg', 'image/webp'].includes(file.type)) {
       this.avatarMessage = 'Solo se permiten imagenes PNG, JPG o WEBP';
-      input.value = '';
       return;
     }
 
     if (file.size > 2 * 1024 * 1024) {
       this.avatarMessage = 'La imagen debe pesar menos de 2 MB';
-      input.value = '';
       return;
     }
 
     this.uploadingAvatar = true;
+
+    if (previewUrl) {
+      this.profile = {
+        ...currentProfile,
+        avatar_url: previewUrl
+      };
+    }
 
     const supabase = getSupabaseClient();
     const fileExtension = file.name.split('.').pop()?.toLowerCase() || 'jpg';
@@ -153,8 +254,8 @@ export class PerfilPage implements OnInit {
     if (uploadError) {
       console.error('Avatar upload error:', uploadError);
       this.avatarMessage = `No se pudo subir la foto: ${uploadError.message}`;
+      this.profile = currentProfile;
       this.uploadingAvatar = false;
-      input.value = '';
       return;
     }
 
@@ -164,28 +265,41 @@ export class PerfilPage implements OnInit {
 
     const avatarUrl = publicUrlData.publicUrl;
 
+    const profileId = currentProfile.id ?? this.userId;
     const { data: updatedProfile, error: updateError } = await supabase
       .from('profiles')
       .update({ avatar_url: avatarUrl })
-      .eq('id', this.userId)
+      .eq('id', profileId)
       .select('avatar_url')
       .single();
 
     if (updateError || !updatedProfile?.avatar_url) {
       console.error('Avatar profile update error:', updateError);
       this.avatarMessage = `La foto subio, pero no se pudo guardar: ${updateError?.message ?? 'No se actualizo el perfil'}`;
+      this.profile = currentProfile;
       this.uploadingAvatar = false;
-      input.value = '';
       return;
     }
 
     this.profile = {
-      ...this.profile,
+      ...currentProfile,
       avatar_url: updatedProfile.avatar_url
     };
     this.avatarMessage = 'Foto actualizada';
     this.uploadingAvatar = false;
-    input.value = '';
+  }
+
+  private dataUrlToFile(dataUrl: string, fileName: string) {
+    const [metadata, base64Data] = dataUrl.split(',');
+    const mimeType = metadata.match(/data:(.*);base64/)?.[1] || 'image/jpeg';
+    const binaryString = atob(base64Data);
+    const bytes = new Uint8Array(binaryString.length);
+
+    for (let index = 0; index < binaryString.length; index += 1) {
+      bytes[index] = binaryString.charCodeAt(index);
+    }
+
+    return new File([bytes], fileName, { type: mimeType });
   }
 
   openPasswordModal() {
@@ -221,17 +335,17 @@ export class PerfilPage implements OnInit {
     }
 
     if (!this.currentPassword) {
-      this.passwordMessage = 'Escribe tu contrasena actual';
+      this.passwordMessage = 'Escribe tu contraseña actual';
       return;
     }
 
     if (this.newPassword.length < 6) {
-      this.passwordMessage = 'La contrasena debe tener al menos 6 caracteres';
+      this.passwordMessage = 'La contraseña debe tener al menos 6 caracteres';
       return;
     }
 
     if (this.newPassword !== this.confirmPassword) {
-      this.passwordMessage = 'Las contrasenas no coinciden';
+      this.passwordMessage = 'Las contraseñas no coinciden';
       return;
     }
 
@@ -245,7 +359,7 @@ export class PerfilPage implements OnInit {
     });
 
     if (signInError) {
-      this.passwordMessage = 'La contrasena actual no es correcta';
+      this.passwordMessage = 'La contraseña actual no es correcta';
       this.changingPassword = false;
       return;
     }
@@ -255,7 +369,7 @@ export class PerfilPage implements OnInit {
     });
 
     if (error) {
-      this.passwordMessage = 'No se pudo cambiar la contrasena';
+      this.passwordMessage = 'No se pudo cambiar la contraseña';
       this.changingPassword = false;
       return;
     }
@@ -265,36 +379,91 @@ export class PerfilPage implements OnInit {
     this.confirmPassword = '';
     this.changingPassword = false;
     this.isPasswordModalOpen = false;
-    this.passwordMessage = 'Contrasena actualizada';
+    this.passwordMessage = 'Contraseña actualizada';
+  }
+
+  async logout() {
+    if (this.loggingOut) {
+      return;
+    }
+
+    this.loggingOut = true;
+    this.logoutMessage = '';
+
+    try {
+      await this.authService.logout();
+      await this.router.navigate(['/login'], { replaceUrl: true });
+    } catch {
+      this.logoutMessage = 'No se pudo cerrar sesion';
+      this.loggingOut = false;
+    }
   }
 
   async loadProfile() {
-  const supabase = getSupabaseClient();
+    const supabase = getSupabaseClient();
 
-  const { data: userData, error: userError } = await supabase.auth.getUser();
+    const { data: userData, error: userError } = await supabase.auth.getUser();
 
-  if (userError || !userData.user) {
-    this.errorMessage = 'No hay usuario logueado';
+    if (userError || !userData.user) {
+      this.errorMessage = 'No hay usuario logueado';
+      this.loading = false;
+      return;
+    }
+
+    this.userId = userData.user.id;
+
+    const { data, error } = await supabase
+      .from('profiles')
+      .select('id, nombre, apellido, email, nombre_usuario, genero, fecha_nacimiento, avatar_url')
+      .eq('id', userData.user.id)
+      .maybeSingle();
+
+    if (error) {
+      this.errorMessage = 'No se pudo cargar el perfil';
+      this.loading = false;
+      return;
+    }
+
+    if (data) {
+      this.profile = data;
+      this.errorMessage = '';
+      this.loading = false;
+      return;
+    }
+
+    if (userData.user.email) {
+      await this.loadProfileByEmail(userData.user.email);
+      return;
+    }
+
+    this.errorMessage = 'No se encontro un perfil para este usuario';
     this.loading = false;
-    return;
   }
 
-  this.userId = userData.user.id;
+  private async loadProfileByEmail(email: string) {
+    const supabase = getSupabaseClient();
+    const { data, error } = await supabase
+      .from('profiles')
+      .select('id, nombre, apellido, email, nombre_usuario, genero, fecha_nacimiento, avatar_url')
+      .ilike('email', email.trim())
+      .limit(1)
+      .maybeSingle();
 
-  const { data, error } = await supabase
-    .from('profiles')
-    .select('nombre, apellido, email, nombre_usuario, genero, fecha_nacimiento, avatar_url')
-    .eq('id', userData.user.id)
-    .single();
+    if (error) {
+      this.errorMessage = 'No se pudo cargar el perfil por correo';
+      this.loading = false;
+      return;
+    }
 
-  if (error) {
-    this.errorMessage = 'No se pudo cargar el perfil';
+    if (!data) {
+      this.errorMessage = 'No se encontro un perfil relacionado con este correo';
+      this.loading = false;
+      return;
+    }
+
+    this.profile = data;
+    this.errorMessage = '';
     this.loading = false;
-    return;
   }
-
-  this.profile = data;
-  this.loading = false;
-}
 
 }

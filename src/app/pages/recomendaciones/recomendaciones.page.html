@@ -1,0 +1,156 @@
+<ion-content [fullscreen]="true">
+  <div class="recommendations-header">
+    <h1>Recomendaciones</h1>
+    <p>Acciones sugeridas para la finca</p>
+  </div>
+
+  <div class="recommendations-content">
+    <div class="summary-strip">
+      <div>
+        <span>Acciones</span>
+        <strong>{{ recomendaciones.length }}</strong>
+      </div>
+
+      <div>
+        <span>Prioridad alta</span>
+        <strong>{{ prioridadAlta }}</strong>
+      </div>
+    </div>
+
+    <div class="input-panel">
+      <div class="panel-title">
+        <ion-icon name="sparkles-outline"></ion-icon>
+        <div>
+          <h2>Datos de la finca</h2>
+          <p>Actualiza las condiciones observadas</p>
+        </div>
+      </div>
+
+      <ion-list>
+        <ion-item>
+          <ion-label position="stacked">Finca</ion-label>
+          <ion-select [(ngModel)]="codigoFinca" interface="alert">
+            <ion-select-option *ngFor="let finca of fincas" [value]="finca.codigo">
+              {{ finca.nombre }}
+            </ion-select-option>
+          </ion-select>
+        </ion-item>
+
+        <ion-item>
+          <ion-label position="stacked">Cultivo</ion-label>
+          <ion-select [(ngModel)]="codigoCultivo" interface="alert">
+            <ion-select-option *ngFor="let cultivo of cultivos" [value]="cultivo.codigo">
+              {{ cultivo.nombre }}
+            </ion-select-option>
+          </ion-select>
+        </ion-item>
+
+        <ion-item>
+          <ion-label position="stacked">Etapa</ion-label>
+          <ion-select [(ngModel)]="etapa" interface="alert">
+            <ion-select-option *ngFor="let etapaItem of etapas" [value]="etapaItem">
+              {{ etapaItem }}
+            </ion-select-option>
+          </ion-select>
+        </ion-item>
+
+        <ion-item>
+          <ion-label position="stacked">Humedad del suelo</ion-label>
+          <ion-select [(ngModel)]="humedad" interface="alert">
+            <ion-select-option *ngFor="let humedadItem of humedades" [value]="humedadItem.valor">
+              {{ humedadItem.etiqueta }}
+            </ion-select-option>
+          </ion-select>
+        </ion-item>
+
+        <ion-item>
+          <ion-label position="stacked">Condicion del suelo</ion-label>
+          <ion-select [(ngModel)]="condicionSuelo" interface="alert">
+            <ion-select-option *ngFor="let condicion of condicionesSuelo" [value]="condicion.valor">
+              {{ condicion.etiqueta }}
+            </ion-select-option>
+          </ion-select>
+        </ion-item>
+
+        <ion-item>
+          <ion-label position="stacked">Vigor del cultivo</ion-label>
+          <ion-select [(ngModel)]="vigor" interface="alert">
+            <ion-select-option *ngFor="let opcion of vigorOpciones" [value]="opcion.valor">
+              {{ opcion.etiqueta }}
+            </ion-select-option>
+          </ion-select>
+        </ion-item>
+
+        <ion-item class="toggle-row">
+          <ion-label>
+            <h3>Plaga visible</h3>
+            <p>Marcas, manchas o insectos en la planta</p>
+          </ion-label>
+          <ion-toggle [(ngModel)]="plagaVisible"></ion-toggle>
+        </ion-item>
+      </ion-list>
+
+      <div class="form-actions">
+        <ion-button expand="block" (click)="generarRecomendaciones()">
+          <ion-icon slot="start" name="analytics-outline"></ion-icon>
+          Obtener acciones
+        </ion-button>
+      </div>
+    </div>
+
+    <div class="section-title">
+      <h2>Acciones recomendadas</h2>
+      <span>{{ getFinca(codigoFinca)?.nombre }}</span>
+    </div>
+
+    <div class="recommendation-card" *ngFor="let recomendacion of recomendaciones">
+      <div class="recommendation-icon" [class.high]="recomendacion.prioridad === 'alta'">
+        <ion-icon [name]="recomendacion.icono"></ion-icon>
+      </div>
+
+      <div class="recommendation-body">
+        <div class="recommendation-heading">
+          <div>
+            <h3>{{ recomendacion.titulo }}</h3>
+            <p>{{ recomendacion.categoria }} - {{ recomendacion.plazo }}</p>
+          </div>
+
+          <ion-badge [class]="recomendacion.prioridad">
+            {{ recomendacion.prioridad }}
+          </ion-badge>
+        </div>
+
+        <p class="recommendation-detail">{{ recomendacion.detalle }}</p>
+      </div>
+    </div>
+  </div>
+</ion-content>
+
+<ion-footer>
+  <ion-tab-bar slot="bottom">
+    <ion-tab-button routerLink="/home" routerDirection="root">
+      <ion-icon name="home-outline"></ion-icon>
+      <ion-label>{{ 'tabs.home' | translate }}</ion-label>
+    </ion-tab-button>
+
+    <ion-tab-button routerLink="/ubicacion" routerDirection="root">
+      <ion-icon name="location-outline"></ion-icon>
+      <ion-label>{{ 'tabs.location' | translate }}</ion-label>
+    </ion-tab-button>
+
+    <ion-tab-button routerLink="/resumen" routerDirection="root">
+      <ion-icon name="bar-chart-outline"></ion-icon>
+      <ion-label>{{ 'tabs.summary' | translate }}</ion-label>
+    </ion-tab-button>
+
+    <ion-tab-button routerLink="/perfil" routerDirection="root">
+      <ion-icon name="person-outline"></ion-icon>
+      <ion-label>{{ 'tabs.profile' | translate }}</ion-label>
+    </ion-tab-button>
+
+    <ion-tab-button routerLink="/servicios" routerDirection="root">
+      <ion-icon name="settings-outline"></ion-icon>
+      <ion-label>{{ 'tabs.services' | translate }}</ion-label>
+    </ion-tab-button>
+  </ion-tab-bar>
+</ion-footer>

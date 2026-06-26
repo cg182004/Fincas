@@ -29,12 +29,12 @@
         </ion-button>
 
         <ion-button
-          *ngIf="!locationServiceEnabled"
+          *ngIf="showLocationSettingsButton"
           size="small"
           fill="outline"
-          (click)="goToServices()"
+          (click)="openLocationSettings()"
         >
-          {{ 'location.go_services' | translate }}
+          {{ 'location.open_gps_settings' | translate }}
         </ion-button>
 
         <ion-button size="small" fill="outline" (click)="openInGoogleMaps()" [disabled]="!location">

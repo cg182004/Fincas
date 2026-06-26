@@ -10,14 +10,20 @@ ion-content {
 }
 
 .avatar-picker {
+  appearance: none;
+  background: transparent;
+  border: 0;
+  color: inherit;
   cursor: pointer;
   display: inline-block;
   margin: 0 auto 12px;
+  padding: 0;
   position: relative;
 }
 
-.avatar-picker input {
-  display: none;
+.avatar-picker:disabled {
+  cursor: progress;
+  opacity: 0.72;
 }
 
 .avatar {

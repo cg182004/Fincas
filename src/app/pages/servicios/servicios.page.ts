@@ -1,6 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, NgZone, OnDestroy, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
+import { App } from '@capacitor/app';
 import { Camera, CameraResultType, CameraSource } from '@capacitor/camera';
 import { Browser } from '@capacitor/browser';
 import { Geolocation, CallbackID } from '@capacitor/geolocation';
@@ -13,13 +14,13 @@ import { addIcons } from 'ionicons';
 import {
   barChartOutline,
   cameraOutline,
+  cubeOutline,
   homeOutline,
   locationOutline,
   personOutline,
   saveOutline,
   settingsOutline,
-  wifiOutline
-} from 'ionicons/icons';
+  wifiOutline, logOutOutline } from 'ionicons/icons';
 
 type DeviceControlKey = 'camera' | 'wifi' | 'storage' | 'location';
 
@@ -64,9 +65,11 @@ const DEVICE_CONTROLS_STATE_KEY = 'appfincas.deviceControlsState';
   standalone: true,
   imports: [IonButton, IonContent, IonFooter, IonIcon, IonLabel, IonTabBar, IonTabButton, IonToggle, CommonModule, RouterLink, TranslatePipe, LanguageSwitcherComponent]
 })
-export class ServiciosPage implements OnInit {
+export class ServiciosPage implements OnInit, OnDestroy {
   private locationWatchId?: CallbackID;
   private networkListener?: PluginListenerHandle;
+  private appResumeListener?: PluginListenerHandle;
+  private appStateListener?: PluginListenerHandle;
   lastLocation?: LocationReading;
   showLocationSettingsButton = false;
 
@@ -105,21 +108,31 @@ export class ServiciosPage implements OnInit {
     }
   ];
 
-  constructor() {
+  constructor(private zone: NgZone) {
     addIcons({
-      'bar-chart-outline': barChartOutline,
-      'camera-outline': cameraOutline,
-      'home-outline': homeOutline,
-      'location-outline': locationOutline,
-      'person-outline': personOutline,
-      'save-outline': saveOutline,
-      'settings-outline': settingsOutline,
-      'wifi-outline': wifiOutline
+      logOutOutline,
+      homeOutline,
+      locationOutline,
+      barChartOutline,
+      personOutline,
+      settingsOutline,
+      cameraOutline,
+      cubeOutline,
+      saveOutline,
+      wifiOutline
     });
   }
 
   ngOnInit() {
     this.restoreDeviceControlsState();
+    void this.refreshLocationStatus();
+    void this.watchAppResume();
+  }
+
+  ngOnDestroy() {
+    void this.networkListener?.remove();
+    void this.appResumeListener?.remove();
+    void this.appStateListener?.remove();
   }
 
   async toggleDevice(controlKey: DeviceControlKey, enabled: boolean) {
@@ -201,6 +214,8 @@ export class ServiciosPage implements OnInit {
     } catch {
       await Browser.open({ url: 'android.settings.LOCATION_SOURCE_SETTINGS' });
     }
+
+    window.setTimeout(() => this.refreshLocationStatusInAngular(), 1200);
   }
 
   private async enableCamera(control: DeviceControl) {
@@ -279,14 +294,14 @@ export class ServiciosPage implements OnInit {
       }, (position, error) => {
         if (error || !position) {
           control.enabled = false;
-          control.status = 'Activa la ubicacion del telefono e intenta otra vez';
+          control.status = 'Desactivada';
           return;
         }
 
         this.setLocationStatus(control, position.coords.latitude, position.coords.longitude, position.coords.accuracy);
       });
     } catch {
-      throw new Error('Activa la ubicacion del telefono e intenta otra vez');
+      throw new Error('Desactivada');
     }
   }
 
@@ -332,7 +347,62 @@ export class ServiciosPage implements OnInit {
       longitude,
       accuracy
     };
-    control.status = `Activa: ${latitude.toFixed(4)}, ${longitude.toFixed(4)} | Precision: ${accuracy.toFixed(0)} m`;
+    control.status = 'Activa';
+  }
+
+  private setLocationInactive(control: DeviceControl) {
+    control.enabled = false;
+    control.status = 'Desactivada';
+    this.lastLocation = undefined;
+    this.setLocationServiceEnabled(false);
+  }
+
+  private async refreshLocationStatus() {
+    const control = this.deviceControls.find((item) => item.key === 'location');
+
+    if (!control) {
+      return;
+    }
+
+    try {
+      const permission = await Geolocation.checkPermissions();
+
+      if (permission.location !== 'granted' && permission.coarseLocation !== 'granted') {
+        this.setLocationInactive(control);
+        this.saveDeviceControlsState();
+        return;
+      }
+
+      const currentPosition = await Geolocation.getCurrentPosition({
+        enableHighAccuracy: permission.location === 'granted',
+        timeout: 5000,
+        maximumAge: 0
+      });
+
+      this.setLocationStatus(control, currentPosition.coords.latitude, currentPosition.coords.longitude, currentPosition.coords.accuracy);
+    } catch {
+      this.setLocationInactive(control);
+    }
+
+    this.saveDeviceControlsState();
+  }
+
+  private async watchAppResume() {
+    this.appResumeListener = await App.addListener('resume', () => {
+      this.refreshLocationStatusInAngular();
+    });
+
+    this.appStateListener = await App.addListener('appStateChange', ({ isActive }) => {
+      if (isActive) {
+        this.refreshLocationStatusInAngular();
+      }
+    });
+  }
+
+  private refreshLocationStatusInAngular() {
+    this.zone.run(() => {
+      void this.refreshLocationStatus();
+    });
   }
 
   private async getStorageInfo(): Promise<StorageInfoResult | undefined> {

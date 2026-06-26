@@ -20,6 +20,47 @@
     </div>
 
     <div class="section-title">
+      <h3>{{ 'summary.crop_stats' | translate }}</h3>
+      <span>{{ activePlans }} {{ 'summary.active_plans' | translate }}</span>
+    </div>
+
+    <div class="stats-panel" *ngIf="cropStats.length; else noStats">
+      <div class="stats-summary">
+        <div>
+          <span>{{ 'summary.total_area' | translate }}</span>
+          <strong>{{ formatNumber(totalArea) }} ha</strong>
+        </div>
+
+        <div>
+          <span>{{ 'summary.inactive_plans' | translate }}</span>
+          <strong>{{ inactivePlans }}</strong>
+        </div>
+      </div>
+
+      <div class="crop-row" *ngFor="let crop of cropStats">
+        <div class="crop-row-top">
+          <strong>{{ crop.name }}</strong>
+          <span>{{ crop.plans }} {{ 'summary.plans' | translate }}</span>
+        </div>
+
+        <div class="crop-track">
+          <div class="crop-fill" [style.width.%]="crop.percentage"></div>
+        </div>
+
+        <div class="crop-row-bottom">
+          <span>{{ formatNumber(crop.area) }} ha</span>
+          <span>{{ crop.percentage }}%</span>
+        </div>
+      </div>
+    </div>
+
+    <ng-template #noStats>
+      <div class="empty-state">
+        {{ 'summary.no_statistics' | translate }}
+      </div>
+    </ng-template>
+
+    <div class="section-title">
       <h3>{{ 'summary.services_status' | translate }}</h3>
       <span>{{ 'summary.updated_live' | translate }}</span>
     </div>

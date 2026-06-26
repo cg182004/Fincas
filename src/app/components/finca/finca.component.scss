@@ -50,6 +50,12 @@ ion-item {
   margin-bottom: 12px;
 }
 
+.field-error {
+  color: #c62828;
+  font-size: 12px;
+  margin: -6px 4px 12px 14px;
+}
+
 ion-input,
 ion-select {
   --color: var(--finca-text, #152016);

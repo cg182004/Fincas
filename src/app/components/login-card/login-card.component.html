@@ -1,5 +1,11 @@
 <section class="login-card">
-  <h1>{{ 'login.title' | translate }}</h1>
+  <div class="brand-header" aria-label="ProAgro">
+    <span class="brand-mark">
+      <ion-icon name="leaf-outline"></ion-icon>
+    </span>
+    <span class="brand-name">ProAgro</span>
+  </div>
+
   <p>{{ helperText | translate }}</p>
 
   <ion-segment [value]="mode" (ionChange)="changeMode($event.detail.value)">

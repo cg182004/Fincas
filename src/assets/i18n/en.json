@@ -34,7 +34,8 @@
     "google": "Continue with Google",
     "connecting": "Connecting...",
     "success": {
-      "created": "Account created. Check your email to confirm access."
+      "created": "Account created. Check your email to confirm access.",
+      "needs_account": "We could not find an account with those details. Create an account to continue."
     },
     "errors": {
       "missing_login": "Enter your username or email and password.",
@@ -44,7 +45,8 @@
       "generic": "The action could not be completed.",
       "invalid_credentials": "Username, email or password is incorrect.",
       "username_not_found": "We could not find that username.",
-      "email_registered": "That email already has an account. Try signing in."
+      "email_registered": "That email already has an account. Try signing in.",
+      "google_account_required": "Create an account before continuing with Google."
     }
   },
   "home": {
@@ -59,6 +61,10 @@
     "nueva_siembra": "New planting",
     "siembra": "Siembra",
     "statistics": "Statistics",
+    "articles": "Articles",
+    "farm_catalog": "Catalog",
+    "recommendations": "Recommendations",
+    "search_articles": "Search articles",
     "my_farms": "My farms",
     "view_all": "View all",
     "active": "active",
@@ -70,8 +76,17 @@
     "farms": "Farms",
     "plots": "Plots",
     "active_services": "Active services",
+    "active_plans": "Active plans",
     "registered_farms": "Registered",
     "available_plots": "Available",
+    "total_area": "Area",
+    "planted_area": "Planted hectares",
+    "pending_tasks": "Pending tasks",
+    "to_review": "To review",
+    "crop_stats": "Plantings by crop",
+    "inactive_plans": "Inactive plans",
+    "plans": "plans",
+    "no_statistics": "There are no active plans to show statistics.",
     "enabled_now": "Enabled now",
     "services_status": "Services status",
     "updated_live": "Updated",
@@ -97,11 +112,37 @@
     "current_password": "Current password",
     "new_password": "New password",
     "confirm_password": "Confirm password",
+    "photo_options": "Profile photo",
+    "take_photo": "Take photo",
+    "choose_gallery": "Choose from gallery",
     "uploading_photo": "Uploading photo..."
+  },
+  "articles": {
+    "title": "Articles",
+    "subtitle": "Check list count, stock and profit",
+    "search_placeholder": "Search article, brand or code",
+    "list_count": "List count",
+    "stock_count": "Total stock",
+    "response_time": "Response",
+    "idle": "Type in the search box to query articles.",
+    "loading": "Searching articles...",
+    "empty": "No articles were found for that search.",
+    "timeout": "The query took too long. Try again.",
+    "error": "Could not query the list.",
+    "stock": "Quantity",
+    "existence": "Stock",
+    "price": "Price",
+    "profit": "Profit",
+    "no_barcode": "No barcode",
+    "no_price_list": "No price list"
   },
   "services": {
     "title": "Services",
     "subtitle": "Device components",
+    "articles_search": "Article query",
+    "articles_search_detail": "Search data from the Softecard link",
+    "articles_search_status": "Ready to query",
+    "open_articles": "Query",
     "test_camera": "Test camera",
     "view_map": "View map",
     "open_gps": "Open GPS"

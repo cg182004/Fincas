@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ToastController } from '@ionic/angular';
-import { FormsModule } from '@angular/forms';
+import { AlertController, ToastController } from '@ionic/angular';
+import { AbstractControl, FormBuilder, ReactiveFormsModule, ValidationErrors, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import {
   IonBackButton,
@@ -16,8 +16,7 @@ import {
   IonSelect,
   IonSelectOption,
   IonTitle,
-  IonToolbar,
-} from '@ionic/angular/standalone';
+  IonToolbar } from '@ionic/angular/standalone';
 import { SiembraStorageService } from 'src/app/services/siembra-storage.service';
 
 @Component({
@@ -27,7 +26,7 @@ import { SiembraStorageService } from 'src/app/services/siembra-storage.service'
   standalone: true,
   imports: [
     CommonModule,
-    FormsModule,
+    ReactiveFormsModule,
     IonBackButton,
     IonButton,
     IonButtons,
@@ -60,27 +59,31 @@ export class FincaComponent implements OnInit {
     { codigo: 'CULT-003', nombre: 'Maiz' },
   ];
 
-  siembra = {
-    codigo_plan_siembra: '',
-    fecha_propuesta: '',
-    codigo_finca: '',
-    codigo_cultivo: '',
-    superficie_siembra: null as number | null,
-    ph_suelo: null as number | null,
-    textura_suelo: '',
-    materia_organica: null as number | null,
-    vel_infiltracion_min: null as number | null,
-    vel_infiltracion_max: null as number | null,
-    codigo_insumo: '',
-    estado: 'activo' as 'activo' | 'inactivo',
-  };
-
   mensaje = '';
   planEditandoId = '';
+  formSubmitted = false;
+  siembraForm = this.fb.group({
+    codigo_plan_siembra: ['', Validators.required],
+    fecha_propuesta: ['', Validators.required],
+    codigo_finca: ['', Validators.required],
+    codigo_cultivo: ['', Validators.required],
+    superficie_siembra: [null as number | null, [Validators.required, Validators.min(0.01)]],
+    ph_suelo: [null as number | null, [Validators.required, Validators.min(0), Validators.max(14)]],
+    textura_suelo: ['', [Validators.required, Validators.minLength(3)]],
+    materia_organica: [null as number | null, [Validators.required, Validators.min(0), Validators.max(100)]],
+    vel_infiltracion_min: [null as number | null, [Validators.required, Validators.min(0)]],
+    vel_infiltracion_max: [null as number | null, [Validators.required, Validators.min(0)]],
+    codigo_insumo: [''],
+    estado: ['activo' as 'activo' | 'inactivo', Validators.required],
+  }, {
+    validators: this.infiltrationRangeValidator
+  });
 
   constructor(
+    private fb: FormBuilder,
     private siembraStorage: SiembraStorageService,
     private toastController: ToastController,
+    private alterController: AlertController,
     private route: ActivatedRoute,
     private router: Router,
   ) {}
@@ -95,17 +98,48 @@ export class FincaComponent implements OnInit {
 
     await this.prepararNuevoPlan();
   }
+  
+  async confirmarGuardarSiembra(){
+   this.formSubmitted = true;
+
+   if (this.siembraForm.invalid) {
+     this.siembraForm.markAllAsTouched();
+     this.mensaje = 'Revisa los campos marcados';
+     await this.presentToast();
+     return;
+   }
+
+   const alert = await this.alterController.create({
+   header: 'Confirmar',
+   message: 'Estás seguro que quieres guardar este plan de siembra?',
+   buttons: [
+   {
+     text: 'cancelar',
+     role: 'cancel',
+   },
+   { 
+    text: 'si, guardar',
+    handler: async () => {
+      await this.guardarSiembra();
+    },
+   },
+   ],
+   });
+   await alert.present();
+  }
 
   async guardarSiembra() {
+    const siembra = this.getSiembraFormValue();
+
     if (this.planEditandoId) {
-      await this.siembraStorage.actualizarSiembra(this.planEditandoId, this.siembra);
+      await this.siembraStorage.actualizarSiembra(this.planEditandoId, siembra);
       this.mensaje = 'Actualizado con exito';
       await this.presentToast();
       await this.router.navigate(['/planes', this.planEditandoId]);
       return;
     }
 
-    await this.siembraStorage.guardarSiembra(this.siembra);
+    await this.siembraStorage.guardarSiembra(siembra);
     const registros = await this.siembraStorage.obtenerSiembras();
     console.log('Siembras guardadas:', registros);
 
@@ -113,6 +147,7 @@ export class FincaComponent implements OnInit {
 
     await this.presentToast();
     await this.limpiarFormulario();
+    this.formSubmitted = false;
   }
 
   async presentToast() {
@@ -139,8 +174,10 @@ export class FincaComponent implements OnInit {
   }
 
   private async prepararNuevoPlan() {
-    this.siembra.codigo_plan_siembra =
-      await this.siembraStorage.generarCodigoPlanSiembra();
+    const codigoPlan = await this.siembraStorage.generarCodigoPlanSiembra();
+    this.siembraForm.patchValue({
+      codigo_plan_siembra: codigoPlan
+    });
   }
 
   private async cargarPlanParaEditar(id: string) {
@@ -152,7 +189,7 @@ export class FincaComponent implements OnInit {
     }
 
     this.planEditandoId = id;
-    this.siembra = {
+    this.siembraForm.patchValue({
       codigo_plan_siembra: plan.codigo_plan_siembra,
       fecha_propuesta: plan.fecha_propuesta,
       codigo_finca: plan.codigo_finca,
@@ -165,11 +202,11 @@ export class FincaComponent implements OnInit {
       vel_infiltracion_max: plan.vel_infiltracion_max,
       codigo_insumo: plan.codigo_insumo,
       estado: plan.estado ?? 'activo',
-    };
+    });
   }
 
   private async limpiarFormulario() {
-    this.siembra = {
+    this.siembraForm.reset({
       codigo_plan_siembra: '',
       fecha_propuesta: '',
       codigo_finca: '',
@@ -182,8 +219,76 @@ export class FincaComponent implements OnInit {
       vel_infiltracion_max: null,
       codigo_insumo: '',
       estado: 'activo',
-    };
+    });
 
     await this.prepararNuevoPlan();
+  }
+
+  isInvalid(controlName: string) {
+    const control = this.siembraForm.get(controlName);
+    return !!control && control.invalid && (control.dirty || control.touched || this.formSubmitted);
+  }
+
+  soloNumerosDecimales(controlName: string, event: Event) {
+    const input = event.target as HTMLIonInputElement | null;
+    const rawValue = String(input?.value ?? '');
+    const cleanValue = rawValue
+      .replace(/,/g, '.')
+      .replace(/[^\d.]/g, '')
+      .replace(/(\..*)\./g, '$1');
+
+    if (rawValue !== cleanValue) {
+      this.siembraForm.get(controlName)?.setValue(cleanValue as never);
+    }
+  }
+
+  hasError(controlName: string, errorName: string) {
+    return this.siembraForm.get(controlName)?.hasError(errorName) ?? false;
+  }
+
+  get infiltrationRangeInvalid() {
+    const min = this.siembraForm.get('vel_infiltracion_min');
+    const max = this.siembraForm.get('vel_infiltracion_max');
+
+    return this.siembraForm.hasError('infiltrationRange')
+      && (!!min?.dirty || !!min?.touched || !!max?.dirty || !!max?.touched || this.formSubmitted);
+  }
+
+  private getSiembraFormValue() {
+    const value = this.siembraForm.getRawValue();
+
+    return {
+      codigo_plan_siembra: value.codigo_plan_siembra ?? '',
+      fecha_propuesta: value.fecha_propuesta ?? '',
+      codigo_finca: value.codigo_finca ?? '',
+      codigo_cultivo: value.codigo_cultivo ?? '',
+      superficie_siembra: this.toNumberOrNull(value.superficie_siembra),
+      ph_suelo: this.toNumberOrNull(value.ph_suelo),
+      textura_suelo: value.textura_suelo ?? '',
+      materia_organica: this.toNumberOrNull(value.materia_organica),
+      vel_infiltracion_min: this.toNumberOrNull(value.vel_infiltracion_min),
+      vel_infiltracion_max: this.toNumberOrNull(value.vel_infiltracion_max),
+      codigo_insumo: value.codigo_insumo ?? '',
+      estado: value.estado ?? 'activo',
+    };
+  }
+
+  private toNumberOrNull(value: unknown) {
+    if (value === null || value === undefined || value === '') {
+      return null;
+    }
+
+    return Number(value);
+  }
+
+  private infiltrationRangeValidator(control: AbstractControl): ValidationErrors | null {
+    const min = control.get('vel_infiltracion_min')?.value;
+    const max = control.get('vel_infiltracion_max')?.value;
+
+    if (min === null || min === undefined || min === '' || max === null || max === undefined || max === '') {
+      return null;
+    }
+
+    return Number(min) > Number(max) ? { infiltrationRange: true } : null;
   }
 }

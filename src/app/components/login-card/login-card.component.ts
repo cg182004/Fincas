@@ -15,7 +15,7 @@ import {
   IonText
 } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
-import { eyeOffOutline, eyeOutline } from 'ionicons/icons';
+import { eyeOffOutline, eyeOutline, leafOutline } from 'ionicons/icons';
 import { GoogleLoginButtonComponent } from '../google-login-button/google-login-button.component';
 import { AuthService } from '../../services/auth';
 
@@ -64,10 +64,7 @@ export class LoginCardComponent {
     private router: Router,
     private translate: TranslateService
   ) {
-    addIcons({
-      'eye-off-outline': eyeOffOutline,
-      'eye-outline': eyeOutline
-    });
+    addIcons({leafOutline,'eyeOffOutline':eyeOffOutline,'eyeOutline':eyeOutline,'leafOutline':leafOutline});
   }
 
   get submitLabel() {
@@ -98,7 +95,9 @@ export class LoginCardComponent {
   }
 
   private async submitLogin() {
-    if (!this.identifier || !this.password) {
+    const trimmedIdentifier = this.identifier.trim();
+
+    if (!trimmedIdentifier || !this.password) {
       this.errorMessage = this.translate.instant('login.errors.missing_login');
       return;
     }
@@ -114,7 +113,7 @@ export class LoginCardComponent {
 
     try {
       const data = await this.authService.loginWithEmailOrUsername(
-        this.identifier.trim(),
+        trimmedIdentifier,
         this.password
       );
 
@@ -199,6 +198,10 @@ export class LoginCardComponent {
 
     if (error.message.includes('User already registered')) {
       return this.translate.instant('login.errors.email_registered');
+    }
+
+    if (error.message.toLowerCase().includes('email rate limit exceeded')) {
+      return 'Se hicieron demasiados intentos con correo. Espera unos minutos y vuelve a probar.';
     }
 
     return error.message;

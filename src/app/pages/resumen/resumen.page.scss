@@ -36,11 +36,13 @@ ion-content {
 .metrics-grid {
   display: grid;
   gap: 12px;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(4, minmax(0, 1fr));
 }
 
 .metric-card,
-.service-card {
+.service-card,
+.stats-panel,
+.empty-state {
   background: var(--summary-card-background, #fff);
   box-shadow: var(--summary-card-shadow, 0 3px 10px rgba(0, 0, 0, 0.12));
 }
@@ -114,6 +116,77 @@ ion-content {
   padding: 16px;
 }
 
+.stats-panel,
+.empty-state {
+  border-radius: 15px;
+  padding: 16px;
+}
+
+.stats-summary {
+  border-bottom: 1px solid var(--summary-border-color, #e6ebe6);
+  display: grid;
+  gap: 12px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  margin-bottom: 16px;
+  padding-bottom: 14px;
+}
+
+.stats-summary div {
+  background: var(--summary-soft-background, #f3f8f3);
+  border-radius: 12px;
+  padding: 12px;
+}
+
+.stats-summary span,
+.crop-row-top span,
+.crop-row-bottom span,
+.empty-state {
+  color: var(--summary-muted-color, #666);
+  font-size: 12px;
+}
+
+.stats-summary strong {
+  color: var(--summary-heading-color, #222);
+  display: block;
+  font-size: 20px;
+  margin-top: 4px;
+}
+
+.crop-row {
+  margin-top: 14px;
+}
+
+.crop-row-top,
+.crop-row-bottom {
+  align-items: center;
+  display: flex;
+  justify-content: space-between;
+}
+
+.crop-row-top strong {
+  color: var(--summary-heading-color, #222);
+  font-size: 14px;
+}
+
+.crop-track {
+  background: var(--summary-track-color, #e8f0e8);
+  border-radius: 999px;
+  height: 9px;
+  margin: 8px 0 6px;
+  overflow: hidden;
+}
+
+.crop-fill {
+  background: #149130;
+  border-radius: inherit;
+  height: 100%;
+  min-width: 8px;
+}
+
+.empty-state {
+  text-align: center;
+}
+
 .service-icon {
   border-radius: 12px;
   flex: 0 0 46px;
@@ -171,6 +244,9 @@ ion-tab-bar {
     --summary-card-shadow: 0 3px 12px rgba(0, 0, 0, 0.38);
     --summary-heading-color: #eef4ee;
     --summary-muted-color: #b8c3b8;
+    --summary-border-color: #2a332a;
+    --summary-soft-background: #202820;
+    --summary-track-color: #2b382c;
   }
 
   .metric-icon,
@@ -181,6 +257,10 @@ ion-tab-bar {
 
 @media (max-width: 560px) {
   .metrics-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .stats-summary {
     grid-template-columns: 1fr;
   }
 }

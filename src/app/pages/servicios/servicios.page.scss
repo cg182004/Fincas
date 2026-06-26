@@ -39,6 +39,10 @@ ion-content {
   padding: 16px;
 }
 
+.articles-link-card {
+  border: 1px solid rgba(8, 123, 24, 0.14);
+}
+
 .language-panel {
   margin: -2px 0 12px;
 }
@@ -89,6 +93,7 @@ ion-toggle {
 }
 
 .device-actions {
+  align-items: center;
   display: flex;
   flex-shrink: 0;
   gap: 8px;
@@ -100,10 +105,12 @@ ion-toggle {
   --background-hover: #0a6816;
   --border-radius: 8px;
   --box-shadow: none;
+  height: 36px;
   font-size: 12px;
   font-weight: 700;
   min-width: 112px;
   text-transform: none;
+  white-space: nowrap;
 }
 
 .action-button.outline {
@@ -111,6 +118,10 @@ ion-toggle {
   --border-color: #087b18;
   --color: #087b18;
   min-width: 96px;
+}
+
+.location-action-button {
+  min-width: 104px;
 }
 
 ion-footer {
@@ -149,10 +160,15 @@ ion-tab-bar {
   }
 
   .device-actions {
+    align-items: stretch;
     flex-direction: column;
   }
 
   .action-button {
     min-width: 96px;
+  }
+
+  .location-action-button {
+    min-width: 104px;
   }
 }

@@ -9,36 +9,33 @@
 
 <ion-content [fullscreen]="true">
   <div class="form-page">
-    <form (ngSubmit)="guardarSiembra()">
+    <form [formGroup]="siembraForm" (ngSubmit)="confirmarGuardarSiembra()" novalidate>
       <ion-list>
         <ion-item>
           <ion-label position="stacked">Codigo plan de siembra</ion-label>
           <ion-input
-            name="codigo_plan_siembra"
-            [(ngModel)]="siembra.codigo_plan_siembra"
+            formControlName="codigo_plan_siembra"
             readonly="true"
-            required
           ></ion-input>
-        </ion-item>
-
+        </ion-item>    
+        
         <ion-item>
           <ion-label position="stacked">Fecha propuesta</ion-label>
           <ion-input
-            name="fecha_propuesta"
+            formControlName="fecha_propuesta"
             type="date"
-            [(ngModel)]="siembra.fecha_propuesta"
-            required
           ></ion-input>
         </ion-item>
+        <p class="field-error" *ngIf="isInvalid('fecha_propuesta')">
+          La fecha propuesta es obligatoria.
+        </p>
 
         <ion-item class="select-row">
           <ion-label position="stacked">Finca</ion-label>
           <ion-select
             class="select-right"
-            name="codigo_finca"
-            [(ngModel)]="siembra.codigo_finca"
+            formControlName="codigo_finca"
             interface="alert"
-            required
           >
             <ion-select-option
               *ngFor="let finca of fincas"
@@ -48,15 +45,16 @@
             </ion-select-option>
           </ion-select>
         </ion-item>
+        <p class="field-error" *ngIf="isInvalid('codigo_finca')">
+          Selecciona una finca.
+        </p>
 
         <ion-item class="select-row">
           <ion-label position="stacked">Cultivo</ion-label>
           <ion-select
             class="select-right"
-            name="codigo_cultivo"
-            [(ngModel)]="siembra.codigo_cultivo"
+            formControlName="codigo_cultivo"
             interface="alert"
-            required
           >
             <ion-select-option
               *ngFor="let cultivo of cultivos"
@@ -66,42 +64,63 @@
             </ion-select-option>
           </ion-select>
         </ion-item>
+        <p class="field-error" *ngIf="isInvalid('codigo_cultivo')">
+          Selecciona un cultivo.
+        </p>
 
         <ion-item>
           <ion-label position="stacked">Superficie a sembrar (ha)</ion-label>
           <ion-input
-            name="superficie_siembra"
+            formControlName="superficie_siembra"
             type="number"
-            [(ngModel)]="siembra.superficie_siembra"
-            required
+            inputmode="decimal"
+            min="0.01"
+            (ionInput)="soloNumerosDecimales('superficie_siembra', $event)"
           ></ion-input>
         </ion-item>
+        <p class="field-error" *ngIf="isInvalid('superficie_siembra')">
+          La superficie debe ser mayor que 0.
+        </p>
 
         <ion-item>
           <ion-label position="stacked">pH del suelo</ion-label>
           <ion-input
-            name="ph_suelo"
+            formControlName="ph_suelo"
             type="number"
-            [(ngModel)]="siembra.ph_suelo"
+            inputmode="decimal"
+            min="0"
+            max="14"
+            (ionInput)="soloNumerosDecimales('ph_suelo', $event)"
           ></ion-input>
         </ion-item>
+        <p class="field-error" *ngIf="isInvalid('ph_suelo')">
+          El pH es obligatorio y debe estar entre 0 y 14.
+        </p>
 
         <ion-item>
           <ion-label position="stacked">Textura del suelo</ion-label>
           <ion-input
-            name="textura_suelo"
-            [(ngModel)]="siembra.textura_suelo"
+            formControlName="textura_suelo"
           ></ion-input>
         </ion-item>
+        <p class="field-error" *ngIf="isInvalid('textura_suelo')">
+          La textura del suelo es obligatoria.
+        </p>
 
         <ion-item>
           <ion-label position="stacked">Materia organica (%)</ion-label>
           <ion-input
-            name="materia_organica"
+            formControlName="materia_organica"
             type="number"
-            [(ngModel)]="siembra.materia_organica"
+            inputmode="decimal"
+            min="0"
+            max="100"
+            (ionInput)="soloNumerosDecimales('materia_organica', $event)"
           ></ion-input>
         </ion-item>
+        <p class="field-error" *ngIf="isInvalid('materia_organica')">
+          La materia organica es obligatoria y debe estar entre 0 y 100.
+        </p>
 
         <div class="inline-fields">
           <ion-item>
@@ -109,9 +128,11 @@
               >Vel. infiltracion min. (cm/h)</ion-label
             >
             <ion-input
-              name="vel_infiltracion_min"
+              formControlName="vel_infiltracion_min"
               type="number"
-              [(ngModel)]="siembra.vel_infiltracion_min"
+              inputmode="decimal"
+              min="0"
+              (ionInput)="soloNumerosDecimales('vel_infiltracion_min', $event)"
             ></ion-input>
           </ion-item>
 
@@ -120,28 +141,34 @@
               >Vel. infiltracion max. (cm/h)</ion-label
             >
             <ion-input
-              name="vel_infiltracion_max"
+              formControlName="vel_infiltracion_max"
               type="number"
-              [(ngModel)]="siembra.vel_infiltracion_max"
+              inputmode="decimal"
+              min="0"
+              (ionInput)="soloNumerosDecimales('vel_infiltracion_max', $event)"
             ></ion-input>
           </ion-item>
         </div>
+        <p class="field-error" *ngIf="isInvalid('vel_infiltracion_min') || isInvalid('vel_infiltracion_max')">
+          La infiltracion minima y maxima son obligatorias y no pueden ser negativas.
+        </p>
+        <p class="field-error" *ngIf="infiltrationRangeInvalid">
+          La infiltracion minima no puede ser mayor que la maxima.
+        </p>
 
         <ion-item class="select-row" *ngIf="planEditandoId">
           <ion-label position="stacked">Estado</ion-label>
           <ion-select
             class="select-right"
-            name="estado"
-            [(ngModel)]="siembra.estado"
+            formControlName="estado"
             interface="alert"
-            required
           >
             <ion-select-option value="activo">Activo</ion-select-option>
             <ion-select-option value="inactivo">Inactivo</ion-select-option>
           </ion-select>
         </ion-item>
       </ion-list>
-      <ion-button expand="block" type="submit">
+      <ion-button expand="block" type="submit" [disabled]="siembraForm.invalid">
         {{ planEditandoId ? 'Actualizar siembra' : 'Guardar siembra' }}
       </ion-button>
     </form>

@@ -5,10 +5,43 @@
   padding: 24px 20px;
 }
 
+.brand-header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  margin-bottom: 22px;
+}
+
+.brand-mark {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  border: 1px solid rgba(104, 211, 145, 0.42);
+  border-radius: 50%;
+  background: linear-gradient(145deg, rgba(38, 166, 91, 0.22), rgba(47, 125, 246, 0.12));
+  box-shadow: 0 10px 22px rgba(22, 101, 52, 0.24);
+  color: #68d391;
+}
+
+.brand-mark ion-icon {
+  font-size: 27px;
+}
+
+.brand-name {
+  color: #ffffff;
+  font-size: 26px;
+  font-weight: 900;
+  letter-spacing: 0;
+}
+
 .login-card h1 {
   font-size: 30px;
   font-weight: 800;
   margin-bottom: 8px;
+  text-align: center;
   color: #ffffff;
 }
 
@@ -16,6 +49,7 @@
   font-size: 14px;
   color: #b8b8b8;
   margin-bottom: 22px;
+  text-align: center;
 }
 
 /* Segmento Entrar / Crear cuenta */
